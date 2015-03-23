@@ -1,0 +1,39 @@
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<meta http-equiv="refresh" content="3; url=administrator_login.php" />
+	<head>
+		<title>增加教师跳转中...</title>
+	</head>
+	<body>
+<?php
+$con = mysql_connect("localhost", "root", "123456");
+mysql_select_db("classroom", $con);
+mysql_query("set names 'gb2312'");
+$sqlstr = 'select * from teacher where username = "' . $_POST['username'] . '"';
+$aquery = mysql_query($sqlstr);
+$adata = mysql_fetch_array($aquery);
+if ($adata != "") {
+	echo "<b>此教师已存在，跳转中...</b>";
+} else {
+	echo "<b>创建用户成功，跳转中...</b>";
+	$sqlstr = 'insert into teacher values ("' . $_POST['username'] . '", "' . $_POST['password'] . '", "' . $_POST['realname'] . '")';
+	mysql_query($sqlstr);
+	$sqlstr = 'create table ' . $_POST['username'] . '_message (time int, _from varchar(50), head varchar(50), content varchar(100), state int)';
+	mysql_query($sqlstr);
+	$sqlstr = 'create table ' . $_POST['username'] . '_teach_table (week int, class1 varchar(50), class2 varchar(50), class3 varchar(50), class4 varchar(50))';
+	mysql_query($sqlstr);
+	$sqlstr = 'insert into ' . $_POST['username'] . '_teach_table values (1, null, null, null, null)';
+	mysql_query($sqlstr);
+	$sqlstr = 'insert into ' . $_POST['username'] . '_teach_table values (2, null, null, null, null)';
+	mysql_query($sqlstr);
+	$sqlstr = 'insert into ' . $_POST['username'] . '_teach_table values (3, null, null, null, null)';
+	mysql_query($sqlstr);
+	$sqlstr = 'insert into ' . $_POST['username'] . '_teach_table values (4, null, null, null, null)';
+	mysql_query($sqlstr);
+	$sqlstr = 'insert into ' . $_POST['username'] . '_teach_table values (5, null, null, null, null)';
+	mysql_query($sqlstr);
+	mysql_close($con);
+}
+?>
+	</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style type="text/css">
+<!--
+body {
+	background-image: url(../images/8.jpg);
+}
+.STYLE1 {font-size: 26px}
+.STYLE2 {font-size: 20px}
+-->
+</style></head>
+<body>
+<table width="960" border="0" align="center"cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="27" colspan="2"><div align="right"><a href="user_logout.php">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="238" height="305">
+		<ul>
+			<h3 class="STYLE1">查询功能</h3>
+			<li class="STYLE2"><a href="user_classroom_status.php"><b>自修室状态查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_schedule.php"><b>自修室排课查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_table.php"><b>教室课表查询</b></a></li>
+			<h3 class="STYLE1">互动信息</h3>
+			<li class="STYLE2"><a href="user_received_message.php"><b>接收的信息</b></a></li>
+			<li class="STYLE2"><a href="user_send_message.php"><b>发送新消息</b></a></li>
+			<li class="STYLE2"><a href="user_send_administrator.php"><b>发消息给管理员</b></a></li>
+		</ul>
+	</td>
+    <td width="749">
+<?php
+function value2str($temperature, $humility)
+{
+	$t = ($temperature > 26 && $temperature < 28)? 1: 0;
+	$h = ($humility > 60 && $humility < 70)? 1: 0;
+	if ($t == 1 && $h == 1) {
+		return '../images/great.bmp';
+	} else if ($t == 0 && $h == 0) {
+		return '../images/bad.bmp';
+	} else {
+		return '../images/good.bmp';
+	}
+}
+echo '<div>';
+echo '<table width="500" height="410" border="3">';
+$con = mysql_connect("localhost", "root", "123456");
+mysql_select_db("classroom", $con);
+mysql_query("set names gb2312");
+$time = time() + 8 * 60 * 60;
+
+/********************************** Comment ******************************
+
+the first floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(301, 305, 1) as $classroom_number) {
+	echo '<td bgcolor="white" background="' . value2str($adata['temperature'], $adata['humility']) . '">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo "自习室: " . $adata['classroom_number'] . "<br />";
+	echo "共有座位: " . $adata['total_seats'] . "<br />";
+	echo "已用: " . $adata['used_seats'] . "<br />";
+	echo "空座: " . ($adata['total_seats'] - $adata['used_seats']) . "<br />";
+	echo "温度: " . $adata['temperature'] . "<br />";
+	echo "湿度: " . $adata['humility'] . "<br />";
+	echo "光照: " . $adata['light'] . "<br />";
+	echo "</td>";
+}
+echo '</tr>';
+
+/********************************** Comment ******************************
+
+the second floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(201, 205, 1) as $classroom_number) {
+	echo '<td bgcolor="white" background="' . value2str($adata['temperature'], $adata['humility']) . '">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo "自习室: " . $adata['classroom_number'] . "<br />";
+	echo "共有座位: " . $adata['total_seats'] . "<br />";
+	echo "已用: " . $adata['used_seats'] . "<br />";
+	echo "空座: " . ($adata['total_seats'] - $adata['used_seats']) . "<br />";
+	echo "湿度: " . $adata['temperature'] . "<br />";
+	echo "湿度: " . $adata['humility'] . "<br />";
+	echo "光照: " . $adata['light'] . "<br />";
+	echo "</td>";
+}
+echo '</tr>';
+
+/********************************** Comment ******************************
+
+the third floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(101, 105, 1) as $classroom_number) {
+	echo '<td bgcolor="white" background="' . value2str($adata['temperature'], $adata['humility']) . '">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo "自习室: " . $adata['classroom_number'] . "<br />";
+	echo "共有座位: " . $adata['total_seats'] . "<br />";
+	echo "已用: " . $adata['used_seats'] . "<br />";
+	echo "空座: " . ($adata['total_seats'] - $adata['used_seats']) . "<br />";
+	echo "温度: " . $adata['temperature'] . "<br />";
+	echo "湿度: " . $adata['humility'] . "<br />";
+	echo "光照: " . $adata['light'] . "<br />";
+	echo "</td>";
+}
+echo '</tr>';
+echo '</table>';
+mysql_close($con);
+?>	</td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+  </tr>
+</table>
+</body>
+</html>

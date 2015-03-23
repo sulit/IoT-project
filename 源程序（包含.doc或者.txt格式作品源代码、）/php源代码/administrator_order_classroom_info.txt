@@ -1,0 +1,152 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理员页面</title>
+<link rel="stylesheet" href="../css/administrator.css" type="text/css" />
+<style type="text/css">
+<!--
+.STYLE3 {font-size: 24%}
+.STYLE4 {
+	font-family: "楷体_GB2312";
+	font-size: xx-large;
+	color: #0033CC;
+	font-weight: bold;
+}
+body {
+	background-image: url("../images/overlook.jpg");
+}
+div#wrapper {
+	margin: 0 auto;
+	padding: 0;
+	border: 0;
+	width: 966px;
+	text-align: left;
+	background: transparent url(/i/site_wrapper.gif) top left repeat-y;
+}
+#Layer1 {
+	position:absolute;
+	width:200px;
+	height:115px;
+	z-index:1;
+	left: 453px;
+	top: 328px;
+}
+.STYLE5 {color: #006699}
+.STYLE6 {font-size: large}
+.STYLE8 {font-size: medium}
+-->
+</style></head>
+<body>
+  <div id="wrapper"><img src="../t/801.jpg" width="944" height="180" />
+    <div id="globalNav"> 
+      <p><img src="../images/site.jpg" /><font color="blue"><b>位置: </b></font><a href="administrator_login.php" class="STYLE3">主 页</a><font color="blue"> &gt; </font><a href="administrator_order_classroom_info.php">自修室预定</a></p>
+    </div>
+  <h2 id="pageName">欢迎使用智慧校园管理员界面</h2>
+   <a> | </a> <span class="STYLE5"><a href="administrator_logout_status.php"> 退出 </a></span> <a> | </a>
+  <div id="breadCrumb"> 
+    <p>
+	</p>
+    <p>&nbsp;</p>
+  </div>
+<div id="navBar">
+  <div id="search">
+    <form action="#">
+      <label>search</label>
+      <input name="searchFor" type="text" size="10" />
+      <input name="goButton" type="submit" value="go" />
+    </form>
+  </div>
+  <div id="sectionLinks">
+    <h3>查询功能</h3>
+    <ul>
+      <li><a href="administrator_classroom_status.php">自修室状态</a></li>
+      <li><a href="administrator_class_table.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule.php">自修室课表</a></li>
+      <li><a href="administrator_room_safe.php">宿舍安全</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>修改功能</h3>
+    <ul>
+      <li><a href="administrator_class_table_change.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule_change.php">自修室课表</a></li>
+      <li><a href="administrator_user_control.php">用户管理</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>流动信息</h3>
+    <ul>
+      <li><a href="administrator_order_classroom_info.php">自修室预定</a></li>
+      <li><a href="administrator_repair_table_info.php">设备维护</a></li>
+      <li><a href="administrator_message.php">问题反馈</a></li>
+    </ul>
+  </div>
+</div>
+<!--end navBar div -->
+<!--end headlines -->
+<div id="content">
+<table border="10">
+<?php
+/********************************************
+function: number2week
+********************************************/
+
+function number2week($number) {
+	switch ($number) {
+	case 1:
+		return '星期一';
+		break;
+	case 2:
+		return '星期二';
+		break;
+	case 3:
+		return '星期三';
+		break;
+	case 4:
+		return '星期四';
+		break;
+	case 5:
+		return '星期五';
+		break;
+	}
+}
+/****************************************
+function: number2class
+****************************************/
+function number2class($number) {
+	switch ($number) {
+	case 1:
+		return '第一节';
+		break;
+	case 2:
+		return '第二节';
+		break;
+	case 3:
+		return '第三节';
+		break;
+	case 4:
+		return '第四节';
+		break;
+	}
+}
+
+$con = mysql_connect("localhost", "root", "123456");
+mysql_query("set names 'gb2312'");
+mysql_select_db("classroom", $con);
+echo '<caption><b>自修室预定信息</b></caption>';
+echo '<tr bgcolor="gray"><td width="160">老师</td><td width="160">审请时间</td><td width="160">星期</td><td width="160">自修室号</td><td width="160">节次</td><td width="160">审请科目</td><td width="160">审请理由</td><td width="160">操作</td></tr>';
+$sqlstr = "select * from order_classroom";
+$aquery = mysql_query($sqlstr);
+$times = 0;
+while ($adata = mysql_fetch_array($aquery)) {
+	echo sprintf('<tr %s><td> %s </td><td> %s </td><td> %s </td><td> %s 号 </td><td> %s </td><td> %s </td><td> %s </td><td><a href="administrator_answer_message.php">回复</a><a href="administrator_delete_order.php?time=%s"> 删除</a></td><tr>', $times++ % 2? 'bgcolor="silver"':'', $adata['teacher'], date('Y年m月d日H时i分s秒', $adata['time']), number2week($adata['week']), $adata['classroom_number'], number2class($adata['class']), $adata['subject'], $adata['reason'], $adata['time']);
+}
+?>
+</table>
+</div>
+
+<div id="siteInfo"> <img src="../images/logo.jpg" width="44" height="22" /> <a href="about_us.php">关于我们</a> | <a href="contact_us.php">联系我们</a> | &copy;2003 JSJ3 </div>
+<br />
+
+</body>
+</html>

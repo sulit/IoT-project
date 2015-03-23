@@ -1,0 +1,14 @@
+#ifndef _SMOKE_H_
+#define _SMOKE_H_
+
+#include "systemInit.h"
+
+
+extern void SmokeAdcInit(void);
+
+extern unsigned long SmokeGet(void);
+
+extern void ADC_Sequence_0_ISR(void);
+
+
+#endif

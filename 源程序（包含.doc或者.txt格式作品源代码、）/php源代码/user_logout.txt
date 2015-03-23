@@ -1,0 +1,16 @@
+<?php
+session_start();
+?>
+<html>
+	<meta http-equiv="refresh" content="3;url=../index.php" />
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<head>
+		<title>退出跳转中...</title>
+	</head>
+	<body>
+<?php
+echo '<b>退出成功，跳转中...</b>';
+unset($_SESSION['username']);
+?>
+	</body>
+</html>

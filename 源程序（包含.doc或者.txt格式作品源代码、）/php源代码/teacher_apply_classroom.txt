@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理系统教师端</title>
+<style type="text/css">
+<!--
+.STYLE1 {font-size: 26px}
+.STYLE2 {font-size: 23px}
+.STYLE3 {font-size: 20px}
+body {
+	background-image: url(../images/084.jpg);
+}
+-->
+</style>
+</head>
+<body>
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="35" colspan="2"><div align="right"><a href="user_logout.php" class="STYLE2">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="264" height="399">
+		<ul>
+			<p>&nbsp;</p>
+			<h3 class="STYLE1">查询功能</h3>
+			<li class="STYLE3"><a href="teacher_class_schedule.php"><b>自修室排课查询</b></a></li>
+			<li class="STYLE3"><a href="teacher_teach_table.php"><b>授课课表查询</b></a></li>
+			<li class="STYLE3"><a href="teacher_message.php"><b>新信息</b></a></li>
+			<h3 class="STYLE1">修改功能</h3>
+			<li class="STYLE3"><a href="teacher_teach_table_change.php"><b>修改授课课表</b></a></li>
+			<h3 class="STYLE1">反馈功能</h3>
+			<li class="STYLE3"><a href="teacher_apply_classroom.php"><b>申请自修室</b></a></li>
+			<li class="STYLE3"><a href="teacher_repair_info.php"><b>损坏物品维修</b></a></li>
+			<li class="STYLE3"><a href="teacher_send_administrator.php"><b>给管理员信息</b></a></li>
+		</ul>
+	</td>
+    <td width="723">
+	<div><form id="form" name="form" action="teacher_send_order_classroom.php" method="post">																																		
+		<b>自修室号</b>
+		<select name="classroom_number">
+			<option value="101">101</option>
+			<option value="102">102</option>
+			<option value="103">103</option>
+			<option value="104">104</option>
+			<option value="105">105</option>
+			<option value="201">201</option>
+			<option value="202">202</option>
+			<option value="203">203</option>
+			<option value="204">204</option>
+			<option value="205">205</option>
+			<option value="301">301</option>
+			<option value="302">302</option>
+			<option value="303">303</option>
+			<option value="304">304</option>
+			<option value="305">305</option>
+		</select>
+		<b> 星期</b>
+		<select name="week">
+			<option value="1">一</option>
+			<option value="2">二</option>
+			<option value="3">三</option>
+			<option value="4">四</option>
+			<option value="5">五</option>
+		</select>
+		<b> 第</b>
+		<select name="class">
+			<option value="1">一</option>
+			<option value="2">二</option>
+			<option value="3">三</option>
+			<option value="4">四</option>
+		</select>
+		<b>节</b>
+		<b> 科目</b>
+		<input type="text" name="subject" />
+		<h3> 详细内容:</h3><br />
+		<textarea cols="60" rows="5" name="content"></textarea><br /><br />
+		<input type="submit" value="提交">
+	</form></div>
+	</td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+  </tr>
+</table>
+</body>
+</html>

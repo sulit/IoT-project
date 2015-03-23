@@ -1,0 +1,28 @@
+<?php
+function opendatabase($host, $user, $pass) {
+	try {
+		if ($db = mysql_connect($host, $user, $pass)) {
+			return $db;
+		} else {
+			throw new exception ("Sorry, could not connect to mysql.");
+		}
+	} catch(exception $e) {
+		echo $e->getmessage();
+	}
+}
+
+function selectdb($whichdb, $db) {
+	try {
+		if (!mysql_select_db($whichdb, $db)) {
+			throw new exception ("Sorry, database could not be opened.");
+		}
+	} catch (exception $e) {
+		echo $e->getmessage();
+	}
+}
+
+function closedatabase($db) {
+	mysql_close($db);
+}
+?>
+<html>

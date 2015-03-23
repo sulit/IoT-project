@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<script language="JavaScript" type="text/javascript">
+//--------------- LOCALIZEABLE GLOBALS ---------------
+var d=new Date();
+var monthname=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+//Ensure correct for language. English is "January 1, 2004"
+var TODAY = monthname[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+//---------------   END LOCALIZEABLE   ---------------
+</script>
+<style type="text/css">
+<!--
+body {
+	background-image: url(../images/084.jpg);
+	background-color: #CCCCCC;
+}
+.STYLE2 {
+	font-size: 24px;
+	font-family: "黑体";
+}
+.STYLE3 {font-size: x-large}
+-->
+</style></head>
+
+<body>
+<div id="div1" style="position: absolute;  text-align:center; visibility:hidden; filter: revealTrans(Transition=8, Duration=1)  revealTrans(Transition=9, Duration=3)  revealTrans(Transition=10, Duration=1)  revealTrans(Transition=11, Duration=2)  revealTrans(Transition=12, Duration=3)  revealTrans(Transition=17, Duration=2)  revealTrans(Transition=18, Duration=3) revealTrans(Transition=19, Duration=1) revealTrans(Transition=20, Duration=2) revealTrans(Transition=21, Duration=3)"><img id="img1"></div>
+<script language="javascript">
+var a=0;
+var a1=15;
+var is=true;
+document.all.div1.style.top=document.body.clientHeight-135;
+document.all.div1.style.left=document.body.clientWidth-175;
+function showdiv(){
+	n=Math.floor(Math.random()*10);
+	document.all.div1.filters[a].apply();
+	if (a1 == 18) { a1 = 15 }
+	else { a1 = a1 + 1}
+	document.all.img1.src="../images/"+a1+".jpg";
+	if (is==true){	
+		document.all.div1.style.visibility="visible";
+		is=false;
+	}else{
+		document.all.div1.style.visibility="hidden";
+		is=true;
+	}
+	document.all.div1.filters[a].play();
+	setTimeout("showdiv()",6000);
+}
+showdiv();
+function place(){
+	window.status=String(a);
+	document.all.div1.style.top=parseInt(document.body.scrollTop)+parseInt(document.body.clientHeight)-135;
+	document.all.div1.style.left=parseInt(document.body.scrollLeft)+parseInt(document.body.clientWidth)-175;
+	setTimeout("place()",50)
+}
+place();
+</script>  
+<form id="form" name="form" method="post" action="user_login_status.php">
+  <table width="987" height="180" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tr>
+      <td><img src="../images/801.jpg" width="987" height="180" /></td>
+    </tr>
+  </table>
+  <table width="989" height="39" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="140"><script language="JavaScript" type="text/javascript">
+      document.write(TODAY);	</script></td>
+      <td width="849"><span class="STYLE3">
+        <marquee direction="left">
+        <b>欢迎进入曲阜师范大学智慧校园管理系统</b>
+        </marquee>
+      </span></td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+  <table width="261" border="1" align="center" cellspacing="1" cellpadding="1">
+    <tr>
+    <td width="287" height="40" align="center"><span class="STYLE2">用户登录</span></td>
+    </tr>
+    <tr>
+      <td>用户名:
+      <input type="text" name="username" /></td>
+    </tr>
+    <tr>
+      <td>密&nbsp;&nbsp;码:
+      <input type="password" name="password" /></td>
+    </tr>
+    <tr>
+      <td height="30"><div align="center">
+        <input type="submit" value="登录"/>
+      </div></td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <table width="961" height="44" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tr>
+      <td><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+</form>
+</body>
+</html>

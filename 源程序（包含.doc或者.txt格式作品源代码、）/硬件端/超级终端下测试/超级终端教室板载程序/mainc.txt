@@ -1,0 +1,211 @@
+#include  "systemInit.h"
+#include  "uartGetPut.h"
+#include  "lcdDisplay.h"
+#include  "Temp.h"
+#include  "DTH11.h"
+#include  "adc.h"
+#include  "myADC.h"
+#include  <stdio.h>
+#include "count.h"
+
+extern int count;
+
+//风扇继电器PA6
+#define FAN_PERIPH         SYSCTL_PERIPH_GPIOA
+#define FAN_PORT           GPIO_PORTA_BASE
+#define FAN_PIN            GPIO_PIN_6
+//加热继电器PA7
+#define HOT_PERIPH         SYSCTL_PERIPH_GPIOA
+#define HOT_PORT           GPIO_PORTA_BASE
+#define HOT_PIN            GPIO_PIN_7 
+//电灯继电器PD0   //与板上的LED1共用
+#define LIGHT_PERIPH    SYSCTL_PERIPH_GPIOD
+#define LIGHT_PORT         GPIO_PORTD_BASE
+#define LIGHT_PIN          GPIO_PIN_0
+//加热灯
+#define HOTL_PERIPH       SYSCTL_PERIPH_GPIOG
+#define HOTL_PORT         GPIO_PORTG_BASE
+#define HOTL_PIN          GPIO_PIN_2
+
+//char str1[]="优";
+//char str2[]="良";
+char temp[5]="20.0";
+char Wet[10]="50"; 
+char lightBuf[4]="500"; 
+//  主函数（程序入口）
+int main(void)
+{
+    float tem=0.0;
+    int light=0;
+    char  temppresence;
+    
+     int num;
+ 
+
+
+    jtagWait();                                             //  防止JTAG失效，重要！
+    clockInit();                                            //  时钟初始化：晶振，6MHz
+    uartInit();
+   
+    tempEnable();
+    tempInit();
+    dthEnable();
+    Init_DTH();
+    adcInit2();                                     //  ADC初始化
+    
+    // 使能风扇
+  SysCtlPeriEnable(FAN_PERIPH);
+  GPIOPinTypeOut(FAN_PORT,FAN_PIN);
+  GPIOPinWrite(FAN_PORT,FAN_PIN,0XFF);
+  //使能加热器
+  SysCtlPeriEnable(HOT_PERIPH);
+  GPIOPinTypeOut(HOT_PORT,HOT_PIN);
+  GPIOPinWrite(HOT_PORT,HOT_PIN,0XFF);
+  //使能灯
+  SysCtlPeriEnable(LIGHT_PERIPH);
+  GPIOPinTypeOut(LIGHT_PORT,LIGHT_PIN);
+  GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0XFF);
+    //使能加热灯
+  SysCtlPeriEnable(HOTL_PERIPH);
+  GPIOPinTypeOut(HOTL_PORT,HOTL_PIN);
+  GPIOPinWrite(HOTL_PORT,HOTL_PIN,0XFF);
+  
+  BZ_Init();
+  
+  LCD_Init();      //LCD初始化  
+    clear_All();     //清屏
+  
+   
+    
+    
+    for (;;)
+    {
+      
+                num=200-count;           //人数统计开始
+                char str3[10];
+                char str4[10];
+                
+                LCD_WriteStr(1,1,"\"*齐鲁软件大赛*\"");
+                sprintf(str3,"现有人数:%3d",count);
+               
+                LCD_WriteStr(2,1,str3);
+                //uartPuts(str1);
+                //SysCtlDelay(100*(TheSysClock/3000));
+                
+                
+                sprintf(str4,"剩余座位:%3d",num);
+                LCD_WriteStr(3,1,str4);
+                //uartPuts(str2);
+                //SysCtlDelay(100*(TheSysClock/3000));      //人数统计结束
+      
+      
+       //温度模块开始
+	if(temppresence ==0x02)
+	{
+	   uartPuts("错误！\r\n");
+ 	   uartPuts("请检查温度传感器");
+	}
+	else
+	{
+	   tem = readTemp();
+	   if(tem>80)
+	   {
+	       tem=20;
+	   }
+           else if(count!=0&&tem>30)
+           {
+              GPIOPinTypeOut(FAN_PORT,FAN_PIN);
+              GPIOPinWrite(FAN_PORT,FAN_PIN,0X00);
+             // SysCtlDelay(500*(TheSysClock / 3000));
+           }
+           else if(count!=0&&tem<15)
+           {
+             GPIOPinTypeOut(HOT_PORT,HOT_PIN);
+              GPIOPinWrite(HOT_PORT,HOT_PIN,0X00);
+              GPIOPinTypeOut(HOTL_PORT,HOTL_PIN);
+              GPIOPinWrite(HOTL_PORT,HOTL_PIN,0X00);
+           }
+           else 
+           {
+              //SysCtlPeriEnable(FAN_PERIPH);
+              GPIOPinTypeIn(FAN_PORT,FAN_PIN);
+              //SysCtlDelay(500*(TheSysClock / 3000));
+              // GPIOPinTypeOut(FAN_PORT,FAN_PIN);
+             // GPIOPinWrite(FAN_PORT,FAN_PIN,0XFF);
+              
+              //SysCtlPeriEnable(HOT_PERIPH);
+              GPIOPinTypeIn(HOT_PORT,HOT_PIN);
+             // GPIOPinWrite(HOT_PORT,HOT_PIN,0XFF);
+              
+             // SysCtlPeriEnable(HOTL_PERIPH);
+              GPIOPinTypeIn(HOTL_PORT,HOTL_PIN);
+              //GPIOPinWrite(HOTL_PORT,HOTL_PIN,0XFF);
+           }
+	   sprintf(temp,"%f",tem);
+	   temp[4]='\0';
+	   uartPuts("温度值：");
+	   uartPuts(temp);
+           uartPuts("℃\r\n");
+           
+	   SysCtlDelay(1000*(TheSysClock / 3000));
+	}
+        //温度模块结束
+        //湿度模块开始
+        Rx_DTH();
+        sprintf(Wet,"%d",U8RH_data_H);
+        Wet[4]='\0';
+        
+        uartPuts("湿度值：");
+        uartPuts(Wet);
+        uartPuts("D\r\n");
+       
+        SysCtlDelay(1000*(TheSysClock / 3000));
+    
+        //湿度模块结束
+        //光敏模块开始
+        light =(int) adcSample2();                                //  ADC采样
+        light = (int)(-0.3349*((light * 3000) / 1024)+1013.7309);//  转换成电压值
+        if(light<100)
+          light=100;
+        if(light>999)
+          light=999;
+       sprintf(lightBuf, "%d", light);         //  输出格式化
+        lightBuf[3]='\0';
+         uartPuts("当前光强：");
+        uartPuts(lightBuf);                                     //  通过UART显示结果
+          uartPuts("\r\n");
+        SysCtlDelay(1500 * (TheSysClock / 3000));           //  延时约1500ms
+        
+        if(count!=0&&light<800)
+        {
+          GPIOPinTypeOut(LIGHT_PORT,LIGHT_PIN);
+          GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0x00);
+          //SysCtlDelay(500 * (TheSysClock / 3000));
+          uartPuts("灯开启\r\n");
+        }
+        else
+        {
+          //SysCtlPeriEnable(LIGHT_PERIPH);
+          GPIOPinTypeIn(LIGHT_PORT,LIGHT_PIN);
+          //GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0xFF);
+        }
+        //光敏模块结束
+        
+        uartPuts("教室舒适度:");
+        LCD_WriteStr(4,1,"教室舒适度:\"");
+        
+        
+        if((tem>25)&&(tem<30))
+        {
+          uartPuts("优");
+          LCD_WriteStr(4,7,"优");
+           LCD_WriteStr(4,8,"\"");
+        }
+        else
+        {
+          uartPuts("良");
+          LCD_WriteStr(4,7,"良"); 
+          LCD_WriteStr(4,8,"\"");
+        }
+    } 
+}

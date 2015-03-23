@@ -1,0 +1,55 @@
+<?php
+session_start();
+$con = mysql_connect('localhost', 'root', '123456');
+mysql_select_db('classroom', $con);
+
+/********************************** Comment ******************************
+
+class table
+
+*************************************************************************/
+if (isset($_POST['classroom_number'])) {
+	$classroom_number = $_POST['classroom_number'];
+} else {
+	$classroom_number = '401';
+}
+
+/********************************** Debug ********************************
+
+echo $classroom_number;
+
+*************************************************************************/
+
+echo '<table>';
+echo '<tr><th width="80"></th><th width="160">first class</th><th width="160">second class</th><th width="160">third class</th><th width="160">forth class</th><tr>';
+$sqlstr = 'select * from class_table_' . $classroom_number;
+
+/********************************** Debug ********************************
+
+echo $sqlstr;
+
+*************************************************************************/
+
+$aquery = mysql_query($sqlstr);
+while ($adata = mysql_fetch_array($aquery)) {
+	echo sprintf('<tr><th>%s</th><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $adata['week'], $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+}
+echo '</table>';
+
+/********************************** Comment ******************************
+
+hyperlink table
+
+*************************************************************************/
+echo '<table>';
+
+echo '<tr>';
+foreach (range(401, 405, 1) as $classroom_number) {
+	echo '<td width="80"><a href="#php/class_table.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+echo '</table>';
+
+mysql_close($con);
+?>

@@ -1,0 +1,39 @@
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<meta http-equiv="refresh" content="3;url=../index.php">
+	<head>
+		<title>注册跳转中...</title>
+	</head>
+	<body>
+<?php
+	$con = mysql_connect("localhost", "root", "123456", "classroom");;
+	mysql_select_db("classroom", $con);
+	mysql_query("set names 'gb2312'");
+	$aquery = mysql_query('select * from user where username = "' . $_POST['usrname'] . '"', $con);
+	$adata = mysql_fetch_row($aquery);
+	if ($_POST['username'] == '' || $_POST['password'] == '') {
+		echo '<b>用户名或密码为空，请重新输入，跳转中...</b>';
+	} else if ($_POST['password'] != $_POST['password2']) {
+		echo '<b>两次密码不相同，请重新输入，跳转中...</b>';
+	} else if ($adata = "") {
+		echo '<b>用户名已存在</b>';
+	} else {
+		$sqlstr = 'insert into user values (' .
+		'"' . $_POST['username'] . '",' .
+		'"' . $_POST['password'] . '",' .
+		'"' . $_POST['realname'] . '",' .
+		'"' . $_POST['email'] . '",' .
+		'null, null, null, ' .
+		'"' . $_POST['sex'] . '",' .
+		'null, null)';
+		mysql_query($sqlstr, $con);
+		$sqlstr = 'create table ' . $_POST['username'] . '_message (time int, _from varchar(50), head varchar(50), content varchar(100), state int)';
+		// echo $sqlstr;
+		mysql_query($sqlstr, $con);
+	echo '<b>注册成功，跳转中...</b>';
+
+	}
+	mysql_close($con);
+?>
+	</body>
+</html>

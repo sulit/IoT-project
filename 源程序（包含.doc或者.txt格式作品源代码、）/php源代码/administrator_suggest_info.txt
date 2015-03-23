@@ -1,0 +1,25 @@
+<?php
+$con = mysql_connect("localhost", "root", "123456");
+mysql_query("set names 'gb2312'");
+mysql_select_db("classroom", $con);
+?>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		<title>设备维护信息</title>
+	</head>
+	<body>
+		<table>
+			<caption><b>设备维护信息</b></caption>
+			<tr bgcolor="gray"><td>姓名</td><td>上报时间</td><td><td>意见或建议</td><td>操作</td></tr>
+<?php
+$sqlstr = "select * from administrator_suggest";
+$aquery = mysql_query($sqlstr);
+$times = 0;
+while ($adata = mysql_fetch_array($aquery)) {
+	echo sprintf('<tr %s><td> %s </td><td> %s </td><td> %s </td><td><a href="administraotr_delete_suggest.php?time=%s">删除</a></td><tr>', $times++ % 2? 'bgcolor="silver"':'', $adata['name'], date('Y年m月d日H时i分', $adata['time']), $adata['suggest'], $adata['time']);
+}
+?>
+		</table>
+	</body>
+</html>

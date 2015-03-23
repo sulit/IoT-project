@@ -1,0 +1,26 @@
+#ifndef _DTH11_H_
+#define _DTH11_H_
+
+#include "systemInit.h"
+
+
+#define uchar unsigned char
+#define uint unsigned int
+
+#define  DTH_PERIPH             SYSCTL_PERIPH_GPIOE
+#define  DTH_PORT               GPIO_PORTE_BASE
+#define  DTH_PIN                GPIO_PIN_2
+
+extern uchar  U8FLAG,k;
+extern uchar  U8temp;
+extern uchar  U8T_data_H,U8T_data_L,U8RH_data_H,U8RH_data_L,U8checkdata;
+extern uchar  U8T_data_H_temp,U8T_data_L_temp,U8RH_data_H_temp,U8RH_data_L_temp,U8checkdata_temp;
+extern uchar  U8comdata;
+
+extern void dthEnable(void);
+extern long GPRead(void);
+extern void Rx_DTH(void);
+extern void Com_DTH(void);
+extern void Init_DTH(void);
+extern uchar Get_DTH(uchar data);
+#endif

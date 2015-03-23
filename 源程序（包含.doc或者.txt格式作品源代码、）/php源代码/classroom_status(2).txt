@@ -1,0 +1,53 @@
+<html>
+	<head><title>自修室状态</title>
+	</head>
+	<body>
+		<?php
+		$con = mysql_connect("localhost","root","kgdvfhpje");
+		if (!$con) {
+			die("Sorry, could not connect to mysql.");
+		}
+
+		if (!mysql_select_db("classroom", $con)) {
+			die('Sorry, database Could not be opened.');
+		}
+
+		echo('<table border="30" cellpadding="30">');
+		for ($i = 3; $i >= 1; $i--) {
+			echo('<tr>');
+			for ($j = 1; $j <= 5; $j++) {
+				$room_number = $i * 100 + $j;
+				switch ($i) {
+				case 1:
+					$table = "first_floor";
+					break;
+				case 2:
+					$table = "second_floor";
+					break;
+				case 3:
+					$table = "third_floor";
+					break;
+				}
+				$aquary = mysql_query("select * from $table where classroom_number = $room_number");
+				$adata = mysql_fetch_array($aquary);
+				$blank_seat = $adata["total_seat"]-$adata["exist_person"];
+				// if ($adata["has_class"] == 1) {
+				//	echo('<td width="60" bgcolor="#FF0000">');
+				// } else {
+				//	echo('<td width="60" bgcolor="#00FF00">');
+				// }
+				echo('<td width="80" height="200">');
+				echo('教室号:'.$i *100+$j);
+				echo('总共:' . $adata["total_seat"]);
+				echo('已坐:' . $adata["exist_person"]);
+				echo('空位:' . $blank_seat);
+				echo('温度:' . $adata["T"]);
+				echo('湿度:' . $adata["RH"]);
+				echo('</td>');
+			}
+			echo('</tr>');
+		}
+		mysql_close($con);
+		?>
+	</body>
+</html>

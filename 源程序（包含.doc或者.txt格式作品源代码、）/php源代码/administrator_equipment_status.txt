@@ -1,0 +1,225 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理员页面</title>
+<link rel="stylesheet" href="../css/administrator.css" type="text/css" />
+<style type="text/css">
+<!--
+.STYLE3 {font-size: 24%}
+.STYLE4 {
+	font-family: "楷体_GB2312";
+	font-size: xx-large;
+	color: #0033CC;
+	font-weight: bold;
+}
+body {
+	background-image: url("../images/overlook.jpg");
+}
+div#wrapper {
+	margin: 0 auto;
+	padding: 0;
+	border: 0;
+	width: 966px;
+	text-align: left;
+	background: transparent url(/i/site_wrapper.gif) top left repeat-y;
+}
+#Layer1 {
+	position:absolute;
+	width:200px;
+	height:115px;
+	z-index:1;
+	left: 453px;
+	top: 328px;
+}
+.STYLE5 {color: #006699}
+.STYLE6 {font-size: large}
+.STYLE8 {font-size: medium}
+-->
+</style></head>
+<body>
+  <div id="wrapper"><img src="../t/801.jpg" width="944" height="180" />
+    <div id="globalNav"> 
+      <p>&nbsp;</p>
+      <p><img src="../images/site.jpg" /><font color="blue"><b>位置: </b></font><a href="administrator_login.php" class="STYLE3">主 页</a><font color="blue"> &gt; </font><a href="administrator_classroom_status.php"> 自修室状态 </a><font color="blue"> &gt; </font><a href="administrator_equipment_status.php">设备状态</a></p>
+    </div>
+  <h2 id="pageName">欢迎使用智慧校园管理员界面</h2>
+   <a> | </a> <span class="STYLE5"><a href="administrator_logout_status.php"> 退出 </a></span> <a> | </a>
+  <div id="breadCrumb"> 
+    <p>
+	</p>
+    <p>&nbsp;</p>
+  </div>
+<div id="navBar">
+  <div id="search">
+    <form action="#">
+      <label>search</label>
+      <input name="searchFor" type="text" size="10" />
+      <input name="goButton" type="submit" value="go" />
+    </form>
+  </div>
+  <div id="sectionLinks">
+    <h3>查询功能</h3>
+    <ul>
+      <li><a href="administrator_classroom_status.php">自修室状态</a></li>
+      <li><a href="administrator_class_table.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule.php">自修室课表</a></li>
+      <li><a href="administrator_room_safe.php">宿舍安全</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>修改功能</h3>
+    <ul>
+      <li><a href="administrator_class_table_change.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule_change.php">自修室课表</a></li>
+      <li><a href="administrator_user_control.php">用户管理</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>流动信息</h3>
+    <ul>
+      <li><a href="administrator_order_classroom_info.php">自修室预定</a></li>
+      <li><a href="administrator_repair_table_info.php">设备维护</a></li>
+      <li><a href="administrator_message.php">问题反馈</a></li>
+    </ul>
+  </div>
+</div>
+<!--end navBar div -->
+<!--end headlines -->
+<div id="content">
+<table>
+
+<?php
+function c2str($c) {
+	if ($c == 'o') {
+		return '打开';
+	} else {
+		return '关闭';
+	}
+}
+function c2open($c) {
+	if ($c == 'o') {
+		return '手动';
+	} else {
+		return '自动';
+	}
+}
+
+$con = mysql_connect("localhost", "root", "123456");
+mysql_query("set names gb2312");
+mysql_select_db("classroom", $con);
+	
+/********************************** Comment ******************************
+
+the first floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(301, 305, 1) as $classroom_number) {
+	echo '<td bgcolor="#00FF00">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo '自习室: ' . $adata['classroom_number'] . '<br />';
+	echo '照明灯状态: ' . c2str($adata['light_status']) . '<br />';
+	echo '加热器状态: ' . c2str($adata['hot_status']) . '<br />';
+	echo '风扇状态: ' . c2str($adata['fan_status']) . '<br />';
+	echo '温度传感器是否正常: ' . c2str($adata['temperature_status']) . '<br />';
+	echo '控制形式: ' . c2open($adata['ctrl']);
+	echo "</td>";
+}
+echo '</tr>';
+
+/********************************** Comment ******************************
+
+the second floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(201, 205, 1) as $classroom_number) {
+	echo '<td bgcolor="#00FF00">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo '自习室: ' . $adata['classroom_number'] . '<br />';
+	echo '照明灯状态: ' . c2str($adata['light_status']) . '<br />';
+	echo '加热器状态: ' . c2str($adata['hot_status']) . '<br />';
+	echo '风扇状态: ' . c2str($adata['fan_status']) . '<br />';
+	echo '温度传感器是否正常: ' . c2str($adata['temperature_status']) . '<br />';
+	echo '控制形式: ' . c2open($adata['ctrl']);
+	echo "</td>";
+}
+echo '</tr>';
+
+/********************************** Comment ******************************
+
+the third floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(101, 105, 1) as $classroom_number) {
+	echo '<td bgcolor="#00FF00">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo '自习室: ' . $adata['classroom_number'] . '<br />';
+	echo '照明灯状态: ' . c2str($adata['light_status']) . '<br />';
+	echo '加热器状态: ' . c2str($adata['hot_status']) . '<br />';
+	echo '风扇状态: ' . c2str($adata['fan_status']) . '<br />';
+	echo '温度传感器是否正常: ' . c2str($adata['temperature_status']) . '<br />';
+	echo '控制形式: ' . c2open($adata['ctrl']);
+	echo "</td>";
+}
+echo '</tr>';
+
+mysql_close($con);
+?>
+</table>
+<div>
+<caption><b>改变状态</b></caption>
+<form name="form" id="form" action="administrator_change_status.php" method="post">
+	教室号:
+	<select name="classroom_number">
+		<option value="101">101</option>
+		<option value="102">102</option>
+		<option value="103">103</option>
+		<option value="104">104</option>
+		<option value="105">105</option>
+		<option value="201">201</option>
+		<option value="202">202</option>
+		<option value="203">203</option>
+		<option value="204">204</option>
+		<option value="205">205</option>
+		<option value="301">301</option>
+		<option value="302">302</option>
+		<option value="303">303</option>
+		<option value="304">304</option>
+		<option value="305">305</option>
+	</select>
+	教室控制状态:
+	<select name="ctrl">
+		<option value="o">手动控制</option>
+		<option value="f">自动控制</option>
+	</select><br />
+	电灯状态:
+	<select name="light_status">
+		<option value="o">打开</option>
+		<option value="f">关闭</option>
+	</select>
+	风扇状态:
+	<select name="fan_status">
+		<option value="o">打开</option>
+		<option value="f">关闭</option>
+	</select>
+	加热器状态:
+	<select name="hot_status">
+		<option value="o">打开</option>
+		<option value="f">关闭</option>
+	</select><br />
+	<input type="submit" value="更改设置" />
+</form>
+</div>
+</div>
+
+<div id="siteInfo"> <img src="../images/logo.jpg" width="44" height="22" /> <a href="about_us.php">关于我们</a> | <a href="contact_us.php">联系我们</a> | &copy;2003 JSJ3 </div>
+<br />
+
+</body>
+</html>
+

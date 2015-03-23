@@ -1,0 +1,74 @@
+
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<?php
+echo "<table>";
+$con = mysql_connect("localhost", "root", "123456");
+mysql_select_db("classroom", $con);
+mysql_query("set names gb2312");
+$time = time() + 8 * 60 * 60;
+
+/********************************** Comment ******************************
+
+the first floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(301, 305, 1) as $classroom_number) {
+	echo '<td bgcolor="#00FF00">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo "自习室: " . $adata['classroom_number'] . "<br />";
+	echo "共有座位: " . $adata['total_seats'] . "<br />";
+	echo "已用: " . $adata['used_seats'] . "<br />";
+	echo "空座: " . ($adata['total_seats'] - $adata['used_seats']) . "<br />";
+	echo "温度: " . $adata['temperature'] . "<br />";
+	echo "湿度: " . $adata['humility'] . "<br />";
+	echo "光照: " . $adata['light'] . "<br />";
+	echo "</td>";
+}
+echo '</tr>';
+
+/********************************** Comment ******************************
+
+the second floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(201, 205, 1) as $classroom_number) {
+	echo '<td bgcolor="#00FF00">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo "自习室: " . $adata['classroom_number'] . "<br />";
+	echo "共有座位: " . $adata['total_seats'] . "<br />";
+	echo "已用: " . $adata['used_seats'] . "<br />";
+	echo "空座: " . ($adata['total_seats'] - $adata['used_seats']) . "<br />";
+	echo "湿度: " . $adata['temperature'] . "<br />";
+	echo "湿度: " . $adata['humility'] . "<br />";
+	echo "光照: " . $adata['light'] . "<br />";
+	echo "</td>";
+}
+echo '</tr>';
+
+/********************************** Comment ******************************
+
+the third floor
+
+*************************************************************************/
+echo '<tr>';
+foreach (range(101, 105, 1) as $classroom_number) {
+	echo '<td bgcolor="#00FF00">';
+	$aquery = mysql_query("select * from classroom_status where classroom_number = '$classroom_number'");
+	$adata = mysql_fetch_array($aquery);
+	echo "自习室: " . $adata['classroom_number'] . "<br />";
+	echo "共有座位: " . $adata['total_seats'] . "<br />";
+	echo "已用: " . $adata['used_seats'] . "<br />";
+	echo "空座: " . ($adata['total_seats'] - $adata['used_seats']) . "<br />";
+	echo "温度: " . $adata['temperature'] . "<br />";
+	echo "湿度: " . $adata['humility'] . "<br />";
+	echo "光照: " . $adata['light'] . "<br />";
+	echo "</td>";
+}
+echo '</tr>';
+
+mysql_close($con);
+?>

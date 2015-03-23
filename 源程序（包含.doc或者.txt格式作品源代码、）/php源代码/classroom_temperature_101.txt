@@ -1,0 +1,26 @@
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+</head>
+
+<body> !-->
+	<?php
+	Header("Content-type: image/png");
+	$im = ImageCreate (200, 100);
+	$col_black = ImageColorAllocate($im, 0,0,0);
+	$col_orn = ImageColorAllocate($im, 255,192,0);
+	$col_red = ImageColorAllocate($im, 255,0,0);
+	
+	$style=array($col_red,$col_red,$col_black,$col_orn,$col_orn,$col_orn,$col_black);
+	ImageSetStyle($im, $style);
+	ImageLine($im, 0, 50, 199, 50, IMG_COLOR_STYLED);
+	
+	ImagePNG($im);
+	ImageDestroy($im);
+	?>
+<!--
+</body>
+</html>
+!-->

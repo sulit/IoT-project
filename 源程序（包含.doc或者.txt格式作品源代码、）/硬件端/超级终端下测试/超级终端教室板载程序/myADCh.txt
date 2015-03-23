@@ -1,0 +1,21 @@
+#ifndef _MY_ADC_H_
+#define _MY_ADC_H_
+
+#include "systemInit.h"
+
+#define  ADCSequEnable          ADCSequenceEnable
+#define  ADCSequDisable         ADCSequenceDisable
+#define  ADCSequConfig          ADCSequenceConfigure
+#define  ADCSequStepConfig      ADCSequenceStepConfigure
+#define  ADCSequDataGet         ADCSequenceDataGet
+
+extern tBoolean ADC_EndFlag2; 
+//  ADC初始化
+extern void adcInit2(void);
+
+//  ADC采样
+extern unsigned long adcSample2(void);
+
+//  ADC采样序列0的中断
+extern void ADC_Sequence_1_ISR(void);
+#endif

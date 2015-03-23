@@ -1,0 +1,329 @@
+#include  "systemInit.h"
+#include  "uartGetPut.h"
+#include  "lcdDisplay.h"
+#include  "Temp.h"
+#include  "DTH11.h"
+#include  "adc.h"
+#include  "myADC.h"
+#include  <stdio.h>
+#include "count.h"
+#include <string.h>
+
+extern int count;
+
+//风扇继电器PA6
+#define FAN_PERIPH         SYSCTL_PERIPH_GPIOA
+#define FAN_PORT           GPIO_PORTA_BASE
+#define FAN_PIN            GPIO_PIN_6
+//加热继电器PA7
+#define HOT_PERIPH         SYSCTL_PERIPH_GPIOA
+#define HOT_PORT           GPIO_PORTA_BASE
+#define HOT_PIN            GPIO_PIN_7 
+//电灯继电器PD0   //与板上的LED1共用
+#define LIGHT_PERIPH    SYSCTL_PERIPH_GPIOD
+#define LIGHT_PORT         GPIO_PORTD_BASE
+#define LIGHT_PIN          GPIO_PIN_0
+//加热灯
+#define HOTL_PERIPH       SYSCTL_PERIPH_GPIOG
+#define HOTL_PORT         GPIO_PORTG_BASE
+#define HOTL_PIN          GPIO_PIN_2
+
+//char str1[]="优";
+//char str2[]="良";
+char temp[5]="20.0";
+char Wet[3]="50";
+char DTH[3]="40";
+char lightBuf[4]="500"; 
+char sendcode[18];
+//  主函数（程序入口）
+int main(void)
+{
+    float tem=0.0;
+    int light=0;
+    char  temppresence;
+    char readchar[5];
+    char str3[4];
+    char str4[13];
+    char str6[14];
+    char str5[12];
+    int flag = 1;
+    
+     int num;
+
+
+    jtagWait();                                             //  防止JTAG失效，重要！
+    clockInit();                                            //  时钟初始化：晶振，6MHz
+    uartInit();
+   
+    tempEnable();
+    tempInit();
+    dthEnable();
+    Init_DTH();
+    adcInit2();                                     //  ADC初始化
+    
+    // 使能风扇
+  SysCtlPeriEnable(FAN_PERIPH);
+  GPIOPinTypeOut(FAN_PORT,FAN_PIN);
+  GPIOPinWrite(FAN_PORT,FAN_PIN,0XFF);
+  //使能加热器
+  SysCtlPeriEnable(HOT_PERIPH);
+  GPIOPinTypeOut(HOT_PORT,HOT_PIN);
+  GPIOPinWrite(HOT_PORT,HOT_PIN,0XFF);
+  //使能灯
+  SysCtlPeriEnable(LIGHT_PERIPH);
+  GPIOPinTypeOut(LIGHT_PORT,LIGHT_PIN);
+  GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0XFF);
+    //使能加热灯
+  SysCtlPeriEnable(HOTL_PERIPH);
+  GPIOPinTypeOut(HOTL_PORT,HOTL_PIN);
+  GPIOPinWrite(HOTL_PORT,HOTL_PIN,0XFF);
+  
+  BZ_Init();
+  
+  LCD_Init();      //LCD初始化  
+    clear_All();     //清屏
+  
+   
+    //readchar[0]='\0';
+    
+    for (;;)
+    {
+
+		if(flag||'f'==readchar[0])
+        {	
+                flag=0;
+				//人数统计开始
+	        num=200-count;           
+                
+                
+                LCD_WriteStr(1,1,"\"*齐鲁软件大赛*\"");
+                sprintf(str3,"%3d",count);
+                sendcode[0]=str3[0];
+                sendcode[1]=str3[1];
+                sendcode[2]=str3[2];
+                sprintf(str4,"剩余座位:%3d",num);
+                str4[12]='\0';
+                LCD_WriteStr(2,1,str4);
+				//人数统计结束
+      
+      
+				   //温度模块开始
+				if(temppresence ==0x02)
+				{
+					   //加热器故障
+					  sendcode[3]='f';
+				}
+				else
+				{  
+				   //uartPutc('o');
+					sendcode[3]='o';
+				    tem = readTemp();
+				    if(tem>80)
+				    {
+					   tem=20;
+				    }
+				        if(count!=0&&tem>30)
+					{
+						GPIOPinTypeOut(FAN_PORT,FAN_PIN);
+						GPIOPinWrite(FAN_PORT,FAN_PIN,0X00);
+						//风扇开启
+						sendcode[4]='o';
+						sendcode[5]='f';
+
+					}
+					else if(count!=0&&tem<15)
+					{
+						GPIOPinTypeOut(HOT_PORT,HOT_PIN);
+						GPIOPinWrite(HOT_PORT,HOT_PIN,0X00);
+						GPIOPinTypeOut(HOTL_PORT,HOTL_PIN);
+						GPIOPinWrite(HOTL_PORT,HOTL_PIN,0X00);
+						//加热器开启
+						sendcode[4]='f';
+						sendcode[5]='o';
+					}
+					else 
+					{
+						GPIOPinTypeIn(FAN_PORT,FAN_PIN);
+						//风扇关闭
+						sendcode[4]='f';						  
+						GPIOPinTypeIn(HOT_PORT,HOT_PIN);
+						GPIOPinTypeIn(HOTL_PORT,HOTL_PIN);
+						//加热器关闭
+						sendcode[5]='f';
+					}
+					sprintf(temp,"%4.1f",tem);
+					sendcode[6]=temp[0];
+					sendcode[7]=temp[1];
+					sendcode[8]=temp[2];
+					sendcode[9]=temp[3];
+					sprintf(str6,"教室温度:%4.1f\ ",tem);
+					str6[13]='\0';
+					LCD_WriteStr(4,1,str6);
+					SysCtlDelay(1000*(TheSysClock / 3000));
+				}
+				//温度模块结束
+				//湿度模块开始
+				Rx_DTH();
+					
+				sprintf(DTH,"%2d",U8RH_data_H);
+				//uartPuts(DTH);
+				sendcode[10]=DTH[0];
+				sendcode[11]=DTH[1];
+				sprintf(str5,"教室湿度:%2d\ \ \ ",U8RH_data_H);
+				str5[11]='\0';
+				LCD_WriteStr(3,1,str5);
+				 
+				SysCtlDelay(1000*(TheSysClock / 3000));
+				
+				//湿度模块结束
+				//光敏模块开始
+				light =(int) adcSample2();                                //  ADC采样
+				light = (int)(-0.3349*((light * 3000) / 1024)+1013.7309);//  转换成电压值
+				if(light<100)
+					light=100;
+				if(light>999)
+					light=999;
+				sprintf(lightBuf,"%3d",light);         //  输出格式化
+				SysCtlDelay(1500 * (TheSysClock / 3000));           //  延时约1500ms
+				sendcode[12]=lightBuf[0];
+				sendcode[13]=lightBuf[1];
+				sendcode[14]=lightBuf[2];
+				if(count!=0&&light<800)
+				{
+					GPIOPinTypeOut(LIGHT_PORT,LIGHT_PIN);
+					GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0x00);
+
+					//照明灯开
+					sendcode[15]='o';
+				}
+				else
+				{
+					GPIOPinTypeIn(LIGHT_PORT,LIGHT_PIN);
+					//照明灯关
+					sendcode[15]='f';
+				}
+				//光敏模块结束
+                                sendcode[16]='f';
+                                sendcode[17]='\0';
+				uartPuts(sendcode);
+		}
+		if('o'==readchar[0])
+		{
+				//人数统计开始
+		num=200-count;           
+                
+                LCD_WriteStr(1,1,"\"*齐鲁软件大赛*\"");
+                sprintf(str3,"%3d",count);
+                sendcode[0]=str3[0];
+                sendcode[1]=str3[1];
+                sendcode[2]=str3[2];
+                sprintf(str4,"剩余座位:%3d",num);
+                str4[12]='\0';
+                LCD_WriteStr(2,1,str4);
+				//人数统计结束
+      
+      
+				   //温度模块开始
+				if(temppresence ==0x02)
+				{
+					   //加热器故障
+					  sendcode[3]='f';
+				}
+				else
+				{  
+					sendcode[3]='o';
+				    tem = readTemp();
+				    if(tem>80)
+				    {
+					   tem=20;
+				    }
+				        if('o'==readchar[1])
+					{
+						GPIOPinTypeOut(FAN_PORT,FAN_PIN);
+						GPIOPinWrite(FAN_PORT,FAN_PIN,0X00);
+						//风扇开启
+						sendcode[4]='o';
+					}
+                                        else
+                                        {
+                                                GPIOPinTypeIn(FAN_PORT,FAN_PIN);
+						//风扇关闭
+						sendcode[4]='f';
+                                        }
+					if('o'==readchar[2])
+					{
+						GPIOPinTypeOut(HOT_PORT,HOT_PIN);
+						GPIOPinWrite(HOT_PORT,HOT_PIN,0X00);
+						GPIOPinTypeOut(HOTL_PORT,HOTL_PIN);
+						GPIOPinWrite(HOTL_PORT,HOTL_PIN,0X00);
+						//加热器开启
+						sendcode[5]='o';
+					}
+					else 
+					{
+												  
+						GPIOPinTypeIn(HOT_PORT,HOT_PIN);
+						GPIOPinTypeIn(HOTL_PORT,HOTL_PIN);
+						//加热器关闭
+						sendcode[5]='f';
+					}
+					sprintf(temp,"%4.1f",tem);
+					sendcode[6]=temp[0];
+					sendcode[7]=temp[1];
+					sendcode[8]=temp[2];
+					sendcode[9]=temp[3];
+					sprintf(str6,"教室温度:%4.1f\ ",tem);
+					str6[13]='\0';
+					LCD_WriteStr(4,1,str6);
+					SysCtlDelay(1000*(TheSysClock / 3000));
+				}
+				//温度模块结束
+				//湿度模块开始
+				Rx_DTH();
+					
+				sprintf(DTH,"%2d",U8RH_data_H);
+				//uartPuts(DTH);
+				sendcode[10]=DTH[0];
+				sendcode[11]=DTH[1];
+				sprintf(str5,"教室湿度:%2d\ \ \ ",U8RH_data_H);
+				str5[11]='\0';
+				LCD_WriteStr(3,1,str5);
+				 
+				SysCtlDelay(1000*(TheSysClock / 3000));
+				
+				//湿度模块结束
+				//光敏模块开始
+				light =(int) adcSample2();                                //  ADC采样
+				light = (int)(-0.3349*((light * 3000) / 1024)+1013.7309);//  转换成电压值
+				if(light<100)
+					light=100;
+				if(light>999)
+					light=999;
+				sprintf(lightBuf,"%3d",light);         //  输出格式化
+				SysCtlDelay(1500 * (TheSysClock / 3000));           //  延时约1500ms
+				sendcode[12]=lightBuf[0];
+				sendcode[13]=lightBuf[1];
+				sendcode[14]=lightBuf[2];
+				if('o'==readchar[3])
+				{
+					GPIOPinTypeOut(LIGHT_PORT,LIGHT_PIN);
+					GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0x00);
+
+					//照明灯开
+					sendcode[15]='o';
+				}
+				else
+				{
+					GPIOPinTypeIn(LIGHT_PORT,LIGHT_PIN);
+					//照明灯关
+					sendcode[15]='f';
+				}
+				//光敏模块结束
+                                sendcode[16]='o';
+                                sendcode[17]='\0';
+				uartPuts(sendcode);
+		
+		}
+            uartGets(readchar, sizeof(readchar));
+	}
+}

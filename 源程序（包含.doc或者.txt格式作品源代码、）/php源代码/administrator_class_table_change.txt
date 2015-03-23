@@ -1,0 +1,214 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理员页面</title>
+<link rel="stylesheet" href="../css/administrator.css" type="text/css" />
+<style type="text/css">
+<!--
+.STYLE3 {font-size: 24%}
+.STYLE4 {
+	font-family: "楷体_GB2312";
+	font-size: xx-large;
+	color: #0033CC;
+	font-weight: bold;
+}
+body {
+	background-image: url("../images/overlook.jpg");
+}
+div#wrapper {
+	margin: 0 auto;
+	padding: 0;
+	border: 0;
+	width: 966px;
+	text-align: left;
+	background: transparent url(/i/site_wrapper.gif) top left repeat-y;
+}
+#Layer1 {
+	position:absolute;
+	width:200px;
+	height:115px;
+	z-index:1;
+	left: 453px;
+	top: 328px;
+}
+.STYLE5 {color: #006699}
+.STYLE6 {font-size: large}
+.STYLE8 {font-size: medium}
+-->
+</style></head>
+<body>
+  <div id="wrapper"><img src="../t/801.jpg" width="944" height="180" />
+    <div id="globalNav"> 
+      <p><img src="../images/site.jpg" /><font color="blue"><b>位置: </b></font><a href="administrator_login.php" class="STYLE3">主 页</a><font color="blue"> &gt; </font><a href="administrator_class_table_change.php">修改教室课表</a></p>
+    </div>
+  <h2 id="pageName">欢迎使用智慧校园管理员界面</h2>
+   <a> | </a> <span class="STYLE5"><a href="administrator_logout_status.php"> 退出 </a></span> <a> | </a>
+  <div id="breadCrumb"> 
+    <p>
+	</p>
+    <p>&nbsp;</p>
+  </div>
+<div id="navBar">
+  <div id="search">
+    <form action="#">
+      <label>search</label>
+      <input name="searchFor" type="text" size="10" />
+      <input name="goButton" type="submit" value="go" />
+    </form>
+  </div>
+  <div id="sectionLinks">
+    <h3>查询功能</h3>
+    <ul>
+      <li><a href="administrator_classroom_status.php">自修室状态</a></li>
+      <li><a href="administrator_class_table.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule.php">自修室课表</a></li>
+      <li><a href="administrator_room_safe.php">宿舍安全</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>修改功能</h3>
+    <ul>
+      <li><a href="administrator_class_table_change.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule_change.php">自修室课表</a></li>
+      <li><a href="administrator_user_control.php">用户管理</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>流动信息</h3>
+    <ul>
+      <li><a href="administrator_order_classroom_info.php">自修室预定</a></li>
+      <li><a href="administrator_repair_table_info.php">设备维护</a></li>
+      <li><a href="administrator_message.php">问题反馈</a></li>
+    </ul>
+  </div>
+</div>
+<!--end navBar div -->
+<!--end headlines -->
+<div id="content">
+<table border="10">
+<?php
+$con = mysql_connect('localhost', 'root', '123456');
+mysql_query("set names 'gb2312'");
+mysql_select_db('classroom', $con);
+/********************************** Comment ******************************
+
+name: number2week
+parameter: number
+function: change number to week, return week string
+
+*************************************************************************/
+function number2week($number) {
+	switch ($number) {
+	case 1:
+		return '星期一';
+		break;
+	case 2:
+		return '星期二';
+		break;
+	case 3:
+		return '星期三';
+		break;
+	case 4:
+		return '星期四';
+		break;
+	case 5:
+		return '星期五';
+		break;
+	}
+}
+
+/********************************** Comment ******************************
+
+class table
+
+*************************************************************************/
+if ($_GET['classroom_number'] != "") {
+	$classroom_number = $_GET['classroom_number'];
+} else {
+	$classroom_number = '401';
+}
+
+/********************************** Debug ********************************
+
+echo $classroom_number;
+
+*************************************************************************/
+
+echo '<caption><b>教室号：' . $classroom_number . '</b></caption>';
+echo '<tr><th width="80"></th><th width="160" bgcolor="gray">第一节</th><th width="160">第二节</th><th width="160" bgcolor="gray">第三节</th><th width="160">第四节</th><tr>';
+$sqlstr = 'select * from class_table_' . $classroom_number;
+
+/********************************** Debug ********************************
+
+echo $sqlstr;
+
+*************************************************************************/
+
+$aquery = mysql_query($sqlstr);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th>%s</th><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td><td>%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th>%s</th><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td><td>%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+
+echo '</table>';
+
+/********************************** Comment ******************************
+
+hyperlink table
+
+*************************************************************************/
+
+echo '<tr>';
+foreach (range(401, 405, 1) as $classroom_number) {
+	echo '<td width="80"><a href="administrator_class_table_change.php?classroom_number=' . $classroom_number . '">' . $classroom_number . ' </a></td>';
+}
+echo '</tr>';
+
+echo '</table>';
+
+mysql_close($con);
+?>
+</table>
+<form name="form" id="form" method="post" action="administrator_change_class_table.php">
+		<label><b>教室课表修改</b></label><br /><br /><br />
+		<label for="classroom_number">自习室号</label>
+		<select name="classroom_number">
+			<option value='401' />401
+			<option value='402' />402
+			<option value='403' />403
+			<option value='404' />404
+			<option value='405' />405
+		</select>
+		<label for="week">星期</label>
+		<select name="week">
+			<option value="1" />一
+			<option value="2" />二
+			<option value="3" />三
+			<option value="4" />四
+			<option value="5" />五
+		</select>
+		<label for="class">第</label>
+		<select name="class">
+			<option value="1" />一
+			<option value="2" />二
+			<option value="3" />三
+			<option value="4" />四
+		</select>
+		节课
+		<label for="class_name">修改为</label>
+		<input type="text" name="class_name" id="class_name" />
+		<input type="submit" value="提交修改" />
+	</form>
+</div>
+
+<div id="siteInfo"> <img src="../images/logo.jpg" width="44" height="22" /> <a href="about_us.php">关于我们</a> | <a href="contact_us.php">联系我们</a> | &copy;2003 JSJ3 </div>
+<br />
+
+</body>
+</html>

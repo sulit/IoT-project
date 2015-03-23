@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>基于物联网的智慧校园</title>
+</head>
+<body>
+		<?php
+		$con = mysql_connect("localhost","root","kgdvfhpje");
+		if (!$con) {
+			die("Sorry, could not connect to mysql.");
+		}
+
+		if (!mysql_select_db("classroom", $con)) {
+			die('Sorry, database Could not be opened.');
+		}
+
+		echo('<table border="30" cellpadding="30">');
+		for ($i = 3; $i >= 1; $i--) {
+			echo('<tr>');
+			for ($j = 1; $j <= 5; $j++) {
+				$room_number = $i * 100 + $j;
+				switch ($i) {
+				case 1:
+					$table = "first_floor";
+					break;
+				case 2:
+					$table = "second_floor";
+					break;
+				case 3:
+					$table = "third_floor";
+					break;
+				}
+				$aquary = mysql_query("select * from $table where classroom_number = $room_number");
+				$adata = mysql_fetch_array($aquary);
+				$blank_seat = $adata["total_seat"]-$adata["exist_person"];
+				$flag = $adata["has_class"];
+				if ($flag = 0) {
+					echo('<td bgcolor="#FF0000">');
+				} else {
+					echo('<td bgcolor="#00FF00">');
+				}
+				// echo('<td width="80" height="200">');
+				$class = $i*100+$j;
+				echo('教室号:'.$class.'<br />');
+				echo('<br />总共:' . $adata["total_seat"]. $flag);
+				echo('<br />已坐:' . $adata["exist_person"]);
+				echo('<br />空位:' . $blank_seat);
+				echo('<br />温度:' . $adata["T"]);
+				echo('<br />湿度:' . $adata["RH"]);
+				echo('</td>');
+			}
+			echo('</tr>');
+		}
+		mysql_close($con);
+		?>
+</body>
+</html>

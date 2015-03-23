@@ -1,0 +1,51 @@
+#ifndef _LCD_DISPLAY_H_
+#define _LCD_DISPLAY_H_
+
+#include "systemInit.h"
+
+//  定义控制信号
+#define  LCD_KEY_PERIPH             SYSCTL_PERIPH_GPIOB
+#define  LCD_KEY_PORT               GPIO_PORTB_BASE
+#define  LCD_KEY_CS                 GPIO_PIN_0    //RS 片选，高电平使能芯片
+#define  LCD_KEY_DIO                GPIO_PIN_1   //R/W 传输数据
+#define  LCD_KEY_CLK                GPIO_PIN_2   //E时钟信号
+#define  LCD_KEY_PSB                GPIO_PIN_3   //串口选择，低电平选择串口
+#define  LCD_KEY_RST                GPIO_PIN_4   //复位键，低电平有效，但正常显示时，要设成高电平
+
+//LCD初始化
+extern void LCD_Init(void);
+//延时函数
+extern void __delayNuS (unsigned long iTime);
+//清屏
+extern void clear_All(void);
+/////////////////////////////////////////////////////////////////////////////////////////
+/////简单的字符显示函数
+/////////////////////////////////////////////////////////////////////////////////////////
+//写字节
+extern void LCD_ByteWrite(char Bytename);
+//写命令
+extern void LCD_ComdWrite(char comd);
+//写数据
+extern void LCD_DataWrite(char data);
+
+//////////////////////////////////////////////////////////////////////////////////////
+////                   图形显示                                                 //////
+//////////////////////////////////////////////////////////////////////////////////////
+
+//  开启图片显示功能
+extern void LCD_PictureOn(void);
+//  关闭图片显示功能
+extern void LCD_PictureOff(void);
+//定义地址
+extern void LCD_GdramAddress(char VerticalAddr,char HorizontalAddr);    //竖直行，水平列
+//  上电初始化图形显示缓冲区数据， 显示LOGO图形128*64点阵  
+extern void LCD_PowerOnPictureInit_disp(void);
+
+//##################################################################################
+//##                在任意位置显示字符串                                     #######             
+//##################################################################################
+extern unsigned char LCD_SetPos(int X,int Y);
+//extern void LCD_SetPos(char X,char Y);
+extern void LCD_WriteStr(int X,int Y,char * String);
+
+#endif

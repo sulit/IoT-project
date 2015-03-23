@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理系统教师端</title>
+<style type="text/css">
+<!--
+.STYLE1 {font-size: 23px}
+.STYLE2 {font-size: 26px}
+.STYLE3 {font-size: 20px}
+body {
+	background-image: url(../images/084.jpg);
+}
+-->
+</style>
+</head>
+<body>
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="35" colspan="2"><div align="right"><a href="user_logout.php" class="STYLE1">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="241" height="412">
+		<ul>
+			<p>&nbsp;</p>
+			<h3 class="STYLE2">查询功能</h3>
+			<li class="STYLE3"><a href="teacher_class_schedule.php"><b>自修室排课查询</b></a></li>
+			<li class="STYLE3"><a href="teacher_teach_table.php"><b>授课课表查询</b></a></li>
+			<li class="STYLE3"><span class="STYLE3"><a href="teacher_message.php"><b>新信息</b></a></span></li>
+			<h3 class="STYLE2">修改功能</h3>
+			<li class="STYLE3"><a href="teacher_teach_table_change.php"><b>修改授课课表</b></a></li>
+			<h3 class="STYLE2">反馈功能</h3>
+			<li class="STYLE3"><a href="teacher_apply_classroom.php"><b>申请自修室</b></a></li>
+			<li class="STYLE3"><a href="teacher_repair_info.php"><b>损坏物品维修</b></a></li>
+			<li class="STYLE3"><a href="teacher_send_administrator.php"><b>给管理员信息</b></a></li>
+		</ul>
+	</td>
+    <td width="746">
+	<div>
+		<form name="form" id="form" action="teacher_repair_info_status.php" method="post">
+			<h3>教室号</h3>
+			<select name="classroom_number">
+				<option value="401">401</option>
+				<option value="402">402</option>
+				<option value="403">403</option>
+				<option value="404">404</option>
+			</select>
+			<h3>详情</h3>
+			<textarea name="content" rows="5" cols="60"></textarea><br />
+			<input type="submit" value="提交" />
+		</form>
+	</div>
+	</td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+  </tr>
+</table>
+</body>
+</html>

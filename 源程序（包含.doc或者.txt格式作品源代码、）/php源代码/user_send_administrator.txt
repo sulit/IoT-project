@@ -1,0 +1,59 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style type="text/css">
+<!--
+.STYLE1 {font-size: 26px}
+.STYLE2 {font-size: 20px}
+body {
+	background-image: url(../images/8.jpg);
+}
+.STYLE3 {font-size: 23px}
+-->
+</style>
+</head>
+<body>
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="27" colspan="2"><div align="right"><a href="user_logout.php" class="STYLE3">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="284" height="293">
+		<ul>
+			<h3 class="STYLE1">查询功能</h3>
+			<li class="STYLE2"><a href="user_classroom_status.php"><b>自修室状态查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_schedule.php"><b>自修室排课查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_table.php"><b>教室课表查询</b></a></li>
+			<h3 class="STYLE1">互动信息</h3>
+			<li class="STYLE2"><a href="user_received_message.php"><b>接收的信息</b></a></li>
+			<li class="STYLE2"><a href="user_send_message.php"><b>发送新消息</b></a></li>
+			<li class="STYLE2"><a href="user_send_administrator.php"><b>发消息给管理员</b></a></li>
+		</ul>
+	</td>
+    <td width="703">
+		<div>
+			<form name="form" id="form" method="post" action="user_send_administrator_status.php">
+				<h3>给管理员发送信息</h3>
+				标题：<br />
+				<input type="text" name="head" /><br /><br />
+				内容：<br />
+				<textarea name="content" rows="5" rols="60"></textarea><br /><br />
+				<input type="submit" value="发送" />
+			</form>
+		</div>
+	</td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们<a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+  </tr>
+</table>
+</body>
+</html>

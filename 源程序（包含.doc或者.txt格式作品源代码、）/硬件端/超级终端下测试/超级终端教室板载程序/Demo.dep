@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1177644002</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$TOOLKIT_DIR$\lib\Luminary\driverlib.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\count.o</file>
+      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Config_Normal.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\myADC.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\myADC.pbi</file>
+      <file>$PROJ_DIR$\myADC.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\count.pbi</file>
+      <file>$PROJ_DIR$\count.h</file>
+      <file>$PROJ_DIR$\count.c</file>
+      <file>$PROJ_DIR$\DTH11.c</file>
+      <file>$PROJ_DIR$\lcdDisplay.c</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\myADC.c</file>
+      <file>$PROJ_DIR$\systemInit.c</file>
+      <file>$PROJ_DIR$\Temp.c</file>
+      <file>$PROJ_DIR$\uartGetPut.c</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\adc.h</file>
+      <file>$TOOLKIT_DIR$\inc\wchar.h</file>
+      <file>$TOOLKIT_DIR$\inc\xlocale_c.h</file>
+      <file>$TOOLKIT_DIR$\inc\xlocaleuse.h</file>
+      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
+      <file>$TOOLKIT_DIR$\inc\xmtx.h</file>
+      <file>$TOOLKIT_DIR$\inc\xtls.h</file>
+      <file>$TOOLKIT_DIR$\inc\xlocale.h</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\ssi.h</file>
+      <file>$PROJ_DIR$\NRF24L01.h</file>
+      <file>$PROJ_DIR$\uartGetPut.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\uartGetPut.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\temp.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\NRF24L01.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\lcdDisplay.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\DTH11.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\ADC.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\uartGetPut.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\Temp.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\NRF24L01.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\lcdDisplay.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\DTH11.o</file>
+      <file>$PROJ_DIR$\DTH11.h</file>
+      <file>$PROJ_DIR$\lcdDisplay.h</file>
+      <file>$PROJ_DIR$\Temp.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\ctype.h</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\uart.h</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\pin_map.h</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\interrupt.h</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\hw_ints.h</file>
+      <file>$PROJ_DIR$\SysInit.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\systemInit.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\systemInit.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\Demo.out</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\hw_types.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\startup_ewarm.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\hw_gpio.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tl_in.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\SysInit.pbi</file>
+      <file>$TOOLKIT_DIR$\config\Luminary\LM3S.icf</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\Debug\List\Demo.map</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\hw_sysctl.h</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\gpio.h</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\sysctl.h</file>
+      <file>$PROJ_DIR$\Debug\Exe\Demo.bin</file>
+      <file>$PROJ_DIR$\ADC.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\startup_ewarm.o</file>
+      <file>$PROJ_DIR$\systemInit.h</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$TOOLKIT_DIR$\inc\Luminary\hw_memmap.h</file>
+      <file>$PROJ_DIR$\NRF24L01.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\SysInit.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\SysInit.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\Demo.pbd</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\count.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 7</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 8 74 59 76 54 53 70 69 29 2 45 47 44 3 46 48 49 22 42</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 8 74 59 76 54 53 70 69 29 2 45 47 44 46 48 49 22 42</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\DTH11.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 40</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 34</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 74 59 76 54 53 70 69 41 29</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74 59 76 54 53 70 69 41 29</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\lcdDisplay.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 39</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 42 74 59 76 54 53 70 69</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 42 74 59 76 54 53 70 69</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 67</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 79</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 74 59 76 54 53 70 69 29 42 43 41 18 6 2 45 47 44 3 46 48 49 22 8</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74 59 76 54 53 70 69 29 42 43 41 18 6 2 45 47 44 46 48 49 22 8</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\myADC.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 74 59 76 54 53 70 69 18</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 6 74 59 76 54 53 70 69 18</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\systemInit.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 57</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 74 59 76 54 53 70 69</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74 59 76 54 53 70 69</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Temp.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 31</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 43 74 59 76 54 53 70 69</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 43 74 59 76 54 53 70 69</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\uartGetPut.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 36</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 30</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 29 59 76 70 69 51 50 45 47 44 3 46 48 49 26 25 24 23 22 21 20 19</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 29 59 76 70 69 51 50 45 47 44 46 48 49 26 25 24 23 22 21 20 19</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\startup_ewarm.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 73</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 60</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 66 58</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\SysInit.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 78</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 63</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 80 59 76 68 61 70 69</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\Demo.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 66</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 71</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 64 0 40 37 1 39 67 4 73 56 36 75 65 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ADC.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 35</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\NRF24L01.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 32</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 28 74 59 76 54 53 70 69 27 52</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 28 74 59 76 54 53 70 69 27 52</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Obj\Demo.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 34 7 33 79 5 60 57 31 30</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs/>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

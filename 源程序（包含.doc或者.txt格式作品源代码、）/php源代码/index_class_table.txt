@@ -1,0 +1,175 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<script type="text/javascript">
+function MM_CheckFlashVersion(reqVerStr,msg){
+  with(navigator){
+    var isIE  = (appVersion.indexOf("MSIE") != -1 && userAgent.indexOf("Opera") == -1);
+    var isWin = (appVersion.toLowerCase().indexOf("win") != -1);
+    if (!isIE || !isWin){  
+      var flashVer = -1;
+      if (plugins && plugins.length > 0){
+        var desc = plugins["Shockwave Flash"] ? plugins["Shockwave Flash"].description : "";
+        desc = plugins["Shockwave Flash 2.0"] ? plugins["Shockwave Flash 2.0"].description : desc;
+        if (desc == "") flashVer = -1;
+        else{
+          var descArr = desc.split(" ");
+          var tempArrMajor = descArr[2].split(".");
+          var verMajor = tempArrMajor[0];
+          var tempArrMinor = (descArr[3] != "") ? descArr[3].split("r") : descArr[4].split("r");
+          var verMinor = (tempArrMinor[1] > 0) ? tempArrMinor[1] : 0;
+          flashVer =  parseFloat(verMajor + "." + verMinor);
+        }
+      }
+      // WebTV has Flash Player 4 or lower -- too low for video
+      else if (userAgent.toLowerCase().indexOf("webtv") != -1) flashVer = 4.0;
+
+      var verArr = reqVerStr.split(",");
+      var reqVer = parseFloat(verArr[0] + "." + verArr[2]);
+  
+      if (flashVer < reqVer){
+        if (confirm(msg))
+          window.location = "http://www.macromedia.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash";
+      }
+    }
+  } 
+}
+</script>
+<style type="text/css">
+<!--
+body {
+	background-image: url(../images/084.jpg);
+}
+.STYLE1 {font-size: 24px}
+.STYLE2 {font-size: 26px}
+-->
+</style></head>
+
+<body onload="MM_CheckFlashVersion('7,0,0,0','本页内容需要使用较新的 Macromedia Flash Player 版本。是否现在下载它？');">
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td height="157" colspan="3"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="34" colspan="3"><marquee direction="left">
+      <b>欢迎进入曲阜师范大学智慧校园管理系统</b>
+    </marquee></td>
+  </tr>
+  <tr>
+    <td width="124" height="305">
+		<ul>
+			<li><a href="user_login.php">用户登陆</a></li>
+		</ul>
+	</td>
+    <td width="547">
+<?php
+$con = mysql_connect('localhost', 'root', '123456');
+mysql_query("set names 'gb2312'");
+mysql_select_db('classroom', $con);
+/********************************** Comment ******************************
+
+name: number2week
+parameter: number
+function: change number to week, return week string
+
+*************************************************************************/
+function number2week($number) {
+	switch ($number) {
+	case 1:
+		return '星期一';
+		break;
+	case 2:
+		return '星期二';
+		break;
+	case 3:
+		return '星期三';
+		break;
+	case 4:
+		return '星期四';
+		break;
+	case 5:
+		return '星期五';
+		break;
+	}
+}
+
+/********************************** Comment ******************************
+
+class table
+
+*************************************************************************/
+if (isset($_GET['classroom_number'])) {
+	$classroom_number = $_GET['classroom_number'];
+} else {
+	$classroom_number = '401';
+}
+
+/********************************** Debug ********************************
+
+echo $classroom_number;
+
+*************************************************************************/
+
+echo '<b>教室号：' . $classroom_number . '</b><br /><br />';
+echo '<table border=10>';
+echo '<tr><th width="80"></th><th width="160" bgcolor="gray">第一节</th><th width="160">第二节</th><th width="160" bgcolor="gray">第三节</th><th width="160">第四节</th><tr>';
+$sqlstr = 'select * from class_table_' . $classroom_number;
+
+/********************************** Debug ********************************
+
+echo $sqlstr;
+
+*************************************************************************/
+
+$aquery = mysql_query($sqlstr, $con);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th>%s</th><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td><td>%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th>%s</th><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td><td>%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+
+echo '</table>';
+
+/********************************** Comment ******************************
+
+hyperlink table
+
+*************************************************************************/
+echo '<table>';
+
+echo '<tr>';
+foreach (range(401, 405, 1) as $classroom_number) {
+	echo '<td width="80"><a href="index_class_table.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+echo '</table>';
+
+mysql_close($con);
+?>	
+	</td>
+    <td width="306">
+		<ul>
+			<li class="STYLE2"><span class="STYLE1"><span class="STYLE2"><a href="index_classroom_status.php" class="STYLE3">自修室查询</a></span></span></li>
+			<li class="STYLE2"></li>
+			<li class="STYLE2"><span class="STYLE2"><a href="index_class_table.php" class="STYLE3">教室课表查询</a></span></li>
+			<li class="STYLE2"></li>
+			<li class="STYLE2"><img src="../images/welogin.jpg" /></li>
+    </ul>		</td>
+  </tr>
+  <tr>
+    <td height="39" colspan="3"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+  </tr>
+</table>
+</body>
+</html>

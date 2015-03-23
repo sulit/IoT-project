@@ -1,0 +1,96 @@
+#include "systemInit.h"
+#include "DTH11.h"
+#include  "uartGetPut.h"
+
+uchar  U8FLAG,k;
+uchar  U8temp;
+uchar  U8T_data_H,U8T_data_L,U8RH_data_H,U8RH_data_L,U8checkdata;
+uchar  U8T_data_H_temp,U8T_data_L_temp,U8RH_data_H_temp,U8RH_data_L_temp,U8checkdata_temp;
+uchar  U8comdata;
+
+//使能湿度传感器所在的管脚
+void dthEnable(void)
+{
+  SysCtlPeriEnable(DTH_PERIPH);
+  //GPIOPinTypeOut(TEMP_PORT,TEMP_PIN);  //必须要让PA0作为输出端口，方便往里面写值
+  GPIOPinTypeIn( DTH_PORT, DTH_PIN); //PA1作为输入管脚，在main函数中判断
+  //有无湿度传感器:高电平时要看是否与0X02相等，若用0XFF则会出现if判断错误
+}
+long GPRead(void)
+{
+  return GPIOPinRead(DTH_PORT,DTH_PIN);
+}
+
+void Rx_DTH(void)
+{
+  //设置端口为输出，置为0，并延时18ms
+  GPIOPinTypeOut(DTH_PORT, DTH_PIN);
+  GPIOPinWrite(DTH_PORT, DTH_PIN, 0x00);
+  SysCtlDelay(18 * (TheSysClock / 3000));
+  GPIOPinWrite(DTH_PORT, DTH_PIN, 0xff);
+	
+  //总线由上拉电阻拉高 主机延时40us后将端口设置为输入
+  SysCtlDelay(40 * (TheSysClock / 3000000));
+  GPIOPinTypeIn(DTH_PORT, DTH_PIN);
+  if(!GPRead())		//判断是否产生低电平，是则进入if
+  {
+    U8FLAG=2;
+    while((!GPRead())&&U8FLAG++);		//等待80us低电平过去
+    U8FLAG=2;
+    while((GPRead())&&U8FLAG++);		//等待80us高电平过去
+    //开始接受数据
+    //uartPuts("DTH Work\r\n");
+    Com_DTH();
+    U8RH_data_H_temp=U8comdata;
+    Com_DTH();
+    U8RH_data_L_temp=U8comdata;
+    Com_DTH();
+    U8T_data_H_temp=U8comdata;
+    Com_DTH();
+    U8T_data_L_temp=U8comdata;
+    Com_DTH();
+    U8checkdata_temp=U8comdata;
+    //check 
+    U8temp=(U8T_data_H_temp+U8T_data_L_temp+U8RH_data_H_temp+U8RH_data_L_temp);
+    if(U8temp==U8checkdata_temp)
+    {
+      //uartPuts("DTH_DATA Pass Check\r\n");
+      U8RH_data_H=U8RH_data_H_temp;
+      U8RH_data_L=U8RH_data_L_temp;
+      U8T_data_H=U8T_data_H_temp;
+      U8T_data_L=U8T_data_L_temp;
+      U8checkdata=U8checkdata_temp;
+    }//fi
+  }	
+}
+
+void Com_DTH(void)
+{
+  uchar i;
+  for(i=0;i<8;i++)
+  {
+    U8FLAG=2;
+    while((!GPRead())&&U8FLAG++);	 //等待50us直至上升电平
+    SysCtlDelay(30 * (TheSysClock / 3000000));
+    U8temp=0;		//默认为0
+    if(GPRead())
+      U8temp=1;	//如果还是高电平则为1
+    U8FLAG=2;
+    while((GPRead())&&U8FLAG++)		//等待50us的低电平到来
+      if(U8FLAG==1)break;		 //如果超时就跳出for循环
+    U8comdata<<=1; 			//左位移1位
+    U8comdata|=U8temp;
+  }
+}
+
+
+void Init_DTH(void)
+{
+  SysCtlPeriEnable(DTH_PERIPH); 
+}
+
+uchar Get_DTH(uchar data)
+{
+  return data;
+}
+	

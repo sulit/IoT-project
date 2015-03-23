@@ -1,0 +1,16 @@
+<?php
+$news = fopen('campus_news', 'r');
+echo sprintf('
+	<ul>
+		<li>%s</li>
+		<li>%s</li>
+		<li>%s</li>
+		<li>%s</li>
+		<li>%s</li>
+		<li>%s</li>
+		<li>%s</li>
+	</ul>
+	', fgets($news), fgets($news), fgets($news), fgets($news),
+	fgets($news), fgets($news), fgets($news));
+fclose($news);
+?>

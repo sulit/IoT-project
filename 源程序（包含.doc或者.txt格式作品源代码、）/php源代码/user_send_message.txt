@@ -1,0 +1,102 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style type="text/css">
+<!--
+.STYLE1 {font-size: 26px}
+.STYLE2 {font-size: 20px}
+body {
+	background-image: url(../images/8.jpg);
+}
+-->
+</style>
+</head>
+<body>
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="27" colspan="2"><div align="right"><a href="user_logout.php">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="279" height="300">
+		<ul>
+			<h3 class="STYLE1">查询功能</h3>
+			<li class="STYLE2"><a href="user_classroom_status.php"><b>自修室状态查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_schedule.php"><b>自修室排课查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_table.php"><b>教室课表查询</b></a></li>
+			<h3 class="STYLE1">互动信息</h3>
+			<li class="STYLE2"><a href="user_received_message.php"><b>接收的信息</b></a></li>
+			<li class="STYLE2"><a href="user_send_message.php"><b>发送新消息</b></a></li>
+			<li class="STYLE2"><a href="user_send_administrator.php"><b>发消息给管理员</b></a></li>
+		</ul>
+	</td>
+    <td width="708">
+		<div>
+<?php
+$con = mysql_connect('localhost', 'root', '123456');
+mysql_query("set names 'gb2312'");
+mysql_select_db('classroom', $con);
+
+$sqlstr = "select * from user order by username";
+$aquery = mysql_query($sqlstr, $con);
+
+/********************************** Debug ********************************
+
+echo $sqlstr;
+
+*************************************************************************/
+
+/********************************** Comment ******************************
+
+send message form
+
+*************************************************************************/
+echo '<form name="form" id="form" method="post" action="user_send_message_status.php">';
+
+echo '<h3>发送新消息</h3><br />';
+
+echo '发送给：<br />';
+echo '<select name="username">'; // username
+while ($adata = mysql_fetch_array($aquery)) {
+	if ($adata['username'] == $_GET['username']) { // from the received message html
+		// echo 'if<br />';
+		echo '<option value="' . $adata['username'] . '" selected>' . $adata['username'];
+	} else {
+		// echo 'else<br />';
+		echo '<option value="' . $adata['username'] . '">' . $adata['username'];
+	}
+}
+echo '</select><br /><br />';
+
+echo '标题：<br />';
+if ($_GET['head']) {
+	echo '<input type="text" name="head" id="head" value="<回复:' . $_GET['head'] . '/>" /><br /><br />';
+} else {
+	echo '<input type="text" name="head" id="head" /> <br /><br />';
+}
+
+echo '内容：<br />';
+echo '<textarea name="content" rows="5" cols="60"></textarea><br /><br />';
+
+echo '<input type="submit" value="发送" />';
+
+echo '</form>';
+
+mysql_close($con);
+?>
+		</div>
+	</td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+  </tr>
+</table>
+</body>
+</html>

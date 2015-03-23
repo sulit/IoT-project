@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>无标题文档</title>
+<style type="text/css">
+<!--
+body {
+	background-image: url(../images/8.jpg);
+}
+.STYLE1 {font-size: 26px}
+.STYLE2 {font-size: 20px}
+-->
+</style></head>
+<body>
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0"s>
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="27" colspan="2"><div align="right"><a href="user_logout.php">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="204" height="309">
+		<ul>
+			<h3 class="STYLE1">查询功能</h3>
+			<li class="STYLE2"><a href="user_classroom_status.php"><b>自修室状态查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_schedule.php"><b>自修室排课查询</b></a></li>
+			<li class="STYLE2"><a href="user_class_table.php"><b>教室课表查询</b></a></li>
+			<h3 class="STYLE1">互动信息</h3>
+			<li class="STYLE2"><a href="user_received_message.php"><b>接收的信息</b></a></li>
+			<li class="STYLE2"><a href="user_send_message.php"><b>发送新消息</b></a></li>
+			<li class="STYLE2"><a href="user_send_administrator.php"><b>发消息给管理员</b></a></li>
+		</ul>	</td>
+    <td width="778">
+		<div><table border="3">
+<?php
+$con = mysql_connect('localhost', 'root', '123456');
+mysql_query("set names 'gb2312'");
+mysql_select_db('classroom', $con);
+
+/********************************** Comment ******************************
+
+name: number2week
+parameter: number
+function: change number to week, return week string
+
+*************************************************************************/
+function number2week($number) {
+	switch ($number) {
+	case 1:
+		return '星期一';
+		break;
+	case 2:
+		return '星期二';
+		break;
+	case 3:
+		return '星期三';
+		break;
+	case 4:
+		return '星期四';
+		break;
+	case 5:
+		return '星期五';
+		break;
+	}
+}
+
+/********************************** Comment ******************************
+
+class table
+
+*************************************************************************/
+if (isset($_GET['classroom_number'])) {
+	$classroom_number = $_GET['classroom_number'];
+} else {
+	$classroom_number = '101';
+}
+
+/********************************** Debug ********************************
+
+echo $classroom_number;
+
+*************************************************************************/
+
+echo '<caption><b>教室号：' . $classroom_number . '</b></caption>';
+echo '<tr><th width="80"></th><th width="160" bgcolor="gray">第一节</th><th width="160">第二节</th><th width="160" bgcolor="gray">第三节</th><th width="160">第四节</th><tr>';
+$sqlstr = 'select * from class_schedule_' . $classroom_number;
+
+/********************************** Debug ********************************
+
+echo $sqlstr;
+
+*************************************************************************/
+
+$aquery = mysql_query($sqlstr, $con);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th>%s</th><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td><td>%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th>%s</th><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td><td>%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+$adata = mysql_fetch_array($aquery);
+echo sprintf('<tr><th bgcolor="silver">%s</th><td>%s</td><td bgcolor="silver">%s</td><td>%s</td><td bgcolor="silver">%s</td></tr>', number2week($adata['week']), $adata['class1'], $adata['class2'], $adata['class3'], $adata['class4']);
+
+echo '</table>';
+
+/********************************** Comment ******************************
+
+hyperlink table
+
+*************************************************************************/
+echo '<table>';
+
+echo '<tr>';
+foreach (range(101, 105, 1) as $classroom_number) {
+	echo '<td width="80"><a href="user_class_schedule.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+echo '<tr>';
+foreach (range(201, 205, 1) as $classroom_number) {
+	echo '<td><a href="user_class_schedule.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+echo '<tr>';
+foreach (range(301, 305, 1) as $classroom_number) {
+	echo '<td><a href="user_class_schedule.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+mysql_close($con);
+?>
+		</table></div>
+	</td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+  </tr>
+</table>
+</body>
+</html>

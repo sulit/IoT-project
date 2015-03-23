@@ -1,0 +1,252 @@
+#include  "systemInit.h"
+#include  "buzzer.h"
+#include "count.h"
+#include "uartGetPut.h"
+#include <stdio.h>
+#include "DTH11.h"
+#include  "smoke.h"
+
+extern int count;
+
+
+#define PER_PERIPH      SYSCTL_PERIPH_GPIOF       //人体引脚
+#define PER_PORT        GPIO_PORTF_BASE
+#define PER_PIN         GPIO_PIN_2
+
+#define LED_PERIPH      SYSCTL_PERIPH_GPIOD     //非正常渠道进入光报警
+#define LED_PORT        GPIO_PORTD_BASE
+#define LED_PIN         GPIO_PIN_0
+
+#define COLOR1_PERIPH       SYSCTL_PERIPH_GPIOG      //smoke光报警
+#define COLOR1_PORT         GPIO_PORTG_BASE
+#define COLOR1_PIN          GPIO_PIN_2
+
+
+#define LED1_PERIPH      SYSCTL_PERIPH_GPIOF     //提醒锁门进入光报警
+#define LED1_PORT        GPIO_PORTF_BASE
+#define LED1_PIN         GPIO_PIN_6
+
+
+
+   
+/*
+                                                 //电源指示灯 一直处于亮的状态 当有火灾时灭 表示所有电源已切断   
+#define LIGHT_PERIPH    SYSCTL_PERIPH_GPIOF
+#define LIGHT_PORT         GPIO_PORTF_BASE
+#define LIGHT_PIN          GPIO_PIN_6
+*/
+
+ 
+
+
+
+//  主函数（程序入口）
+int main(void)
+{
+      unsigned char ucVal;      //人体变量
+      
+       int smo;            //烟雾变量
+  char smoke[4];
+  char sendcode[11];
+  char counts[3];
+  char Wet[3]="50";    
+    jtagWait();                                             //  防止JTAG失效，重要！
+    clockInit();                                            //  时钟初始化：晶振，6MHz
+    buzzerInit();                                           //  蜂鸣器初始化
+    
+    uartInit();
+   SmokeAdcInit();
+   
+   
+   Init_DTH();
+  //  adcInit2();                                     //  ADC初始化
+  /* 
+   //使能灯
+  SysCtlPeriEnable(LIGHT_PERIPH);
+  GPIOPinTypeOut(LIGHT_PORT,LIGHT_PIN);
+  GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0X00);
+  */
+
+    SysCtlPeriEnable(PER_PERIPH);
+    GPIOPinTypeIn(PER_PORT,PER_PIN);
+    
+    SysCtlPeriEnable(LED_PERIPH);
+    GPIOPinTypeOut(LED_PORT,LED_PIN);
+    
+     SysCtlPeriEnable(LED1_PERIPH);
+    GPIOPinTypeOut(LED1_PORT,LED1_PIN);
+    
+    GPIOPinWrite(PER_PORT,PER_PIN,0x00);
+    SysCtlDelay(100 * (TheSysClock / 3000));
+    GPIOPinWrite(PER_PORT,PER_PIN,0xFF);
+    
+      GPIOPinWrite(LED_PORT,LED_PIN,0x00);
+    SysCtlDelay(1000 * (TheSysClock / 3000));
+    GPIOPinWrite(LED_PORT,LED_PIN,0xFF);
+    
+    GPIOPinWrite(LED1_PORT,LED1_PIN,0x00);
+    SysCtlDelay(100 * (TheSysClock / 3000));
+    GPIOPinWrite(LED1_PORT,LED1_PIN,0xFF);
+
+    
+  
+    //buzzerSound(1500);                                      //  蜂鸣器发出1500Hz声音
+    SysCtlDelay(1000 * (TheSysClock / 3000));                //  延时约400ms
+    
+    BZ_Init();
+    
+    for (;;)
+    {
+      
+		sprintf(counts,"%2d",count);
+     	        sendcode[0] = counts[0];
+		sendcode[1] = counts[1];
+		if(count==0)
+		{
+		    //光报警PC6
+				  
+			GPIOPinWrite(LED1_PORT,LED1_PIN,0X00);
+			SysCtlDelay(400 * (TheSysClock / 3000));
+				  //SysCtlPeriEnable(COLOR1_PERIPH);
+			GPIOPinWrite(LED1_PORT,LED1_PIN,0XFF);
+			SysCtlDelay(400 * (TheSysClock / 3000));
+		}
+      
+      
+       //人体
+		ucVal = GPIOPinRead(PER_PORT,PER_PIN);
+		if(ucVal == 0x00)
+		{
+        
+			buzzerQuiet();
+			sendcode[2] = '0';
+			//uartPuts("安全!\r\n");
+		}
+		else
+		{
+			buzzerInit();
+        
+			GPIOPinWrite(LED_PORT,LED_PIN,0x00);
+			SysCtlDelay(500 * (TheSysClock / 3000));
+			GPIOPinWrite(LED_PORT,LED_PIN,0xFF);
+			SysCtlDelay(500 * (TheSysClock / 3000));
+			buzzerSound(1500);                                      //  蜂鸣器发出1500Hz声音
+			SysCtlDelay(400 * (TheSysClock / 3000));                //  延时约400ms
+
+			buzzerSound(2000);                                      //  蜂鸣器发出2000Hz声音
+			SysCtlDelay(800 * (TheSysClock / 3000)); 		//  延时约800ms
+			sendcode[2] = '1';
+			//uartPuts("有人闯入！\r\n");
+		}
+        
+        //烟雾
+                smo=(int)SmokeGet();
+		if(smo<100)
+			smo = 100;
+		if(smo>1000)
+			smo = 999;
+		sprintf(smoke,"%3d",smo);
+		sendcode[3] = smoke[0];
+		sendcode[4] = smoke[1];
+		sendcode[5] = smoke[2];
+		//uartPuts("烟雾:");
+		//uartPuts(smoke);
+		//uartPuts("ppm\r\n");
+		SysCtlDelay(2000*(TheSysClock/3000));
+    
+    
+		SysCtlPeriEnable(COLOR1_PERIPH);//问题：灯的初始化最好在哪儿？初步认为放这儿可行，放if语句里不可行
+		GPIOPinTypeOut(COLOR1_PORT,COLOR1_PIN);
+    
+		//烟雾处理开始
+                //有烟雾，则单片机上的蜂鸣器响     
+		//我进行了初步测试，smo>900,蜂鸣器一直响，但smo>1023时，蜂鸣器又一直静音
+		//还有一点就是把开发板信息传到宿舍管理系统，但只是读出的信息都是1023，一直不变
+                if(smo>=500)
+                {
+			buzzerInit();
+			buzzerSound(1500);            //  蜂鸣器发出1500Hz声音
+			SysCtlDelay(400 * (TheSysClock / 3000));  //  延时约400ms
+
+			buzzerSound(2000);            //  蜂鸣器发出2000Hz声音
+			SysCtlDelay(800 * (TheSysClock / 3000));  //  延时约800ms
+          
+			//光报警PC6
+          
+			GPIOPinWrite(COLOR1_PORT,COLOR1_PIN,0X00);
+			SysCtlDelay(400 * (TheSysClock / 3000));
+			//SysCtlPeriEnable(COLOR1_PERIPH);
+			GPIOPinWrite(COLOR1_PORT,COLOR1_PIN,0XFF);
+			SysCtlDelay(400 * (TheSysClock / 3000));
+          
+         
+			sendcode[6] = '1';
+			// GPIOPinTypeOut(LIGHT_PORT,LIGHT_PIN);
+			// GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0xFF);
+			//SysCtlDelay(500 * (TheSysClock / 3000));
+			//uartPuts(" 所有电源已关闭，请采取措施！\r\n");
+       
+        
+       
+			//SysCtlPeriEnable(LIGHT_PERIPH);
+			//GPIOPinTypeIn(LIGHT_PORT,LIGHT_PIN);
+			//GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0xFF);
+      
+        }
+			//没有烟雾，蜂鸣器停止;
+        if(smo<500)
+        {
+			buzzerInit();
+			buzzerQuiet();
+          
+			//SysCtlPeriEnable(COLOR1_PERIPH);
+			//GPIOPinTypeOut(COLOR1_PORT,COLOR1_PIN);
+                        
+			GPIOPinWrite(COLOR1_PORT,COLOR1_PIN,0XFF);
+                        SysCtlDelay(2000 * (TheSysClock / 3000));
+			sendcode[6] = '0';
+			//SysCtlPeriEnable(LIGHT_PERIPH);
+			//GPIOPinTypeIn(LIGHT_PORT,LIGHT_PIN);
+			//GPIOPinWrite(LIGHT_PORT,LIGHT_PIN,0xFF);
+        }   
+        //烟雾处理结束;
+      
+      
+      
+		//湿度模块开始
+        Rx_DTH();
+        sprintf(Wet,"%2d",U8RH_data_H);
+        Wet[2]='\0';
+		sendcode[7] = Wet[0];
+		sendcode[8] = Wet[1];
+        
+        //uartPuts("湿度值：");
+        //uartPuts(Wet);
+        //uartPuts("%RH\r\n");
+       
+        SysCtlDelay(1000*(TheSysClock / 3000));
+        
+		if(U8RH_data_H>75)
+        {
+         
+			sendcode[9] = 'o';
+			//uartPuts(" 宿舍内过于潮湿，请通风晒被！\r\n");
+       
+        }
+        //没有烟雾，蜂鸣器停止;
+        else if(U8RH_data_H<45)
+        {
+			//uartPuts(" 宿舍内过于干燥，请适当加湿！\r\n");
+			sendcode[9] = 'f';
+        } 
+		else
+		{
+			sendcode[9] = 'k';
+		}
+		//湿度模块结束
+		sendcode[10] = '\0';
+                uartPuts(sendcode);
+    }
+}	  
+
+

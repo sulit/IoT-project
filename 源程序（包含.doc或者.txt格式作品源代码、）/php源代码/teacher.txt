@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理系统教师端</title>
+<style type="text/css">
+<!--
+.STYLE1 {font-size: 26px}
+.STYLE2 {font-size: 20px}
+body {
+	background-image: url(../images/311.jpg);
+}
+-->
+</style>
+</head>
+<body>
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="35" colspan="2"><div align="right"><a href="user_logout.php">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="204" height="389">
+		<ul>
+			<p class="STYLE1">&nbsp;</p>
+			<h3 class="STYLE1">查询功能</h3>
+			<li class="STYLE2"><a href="teacher_class_schedule.php"><b>自修室排课查询</b></a></li>
+			<li class="STYLE2"><a href="teacher_teach_table.php"><b>授课课表查询</b></a></li>
+			<li class="STYLE2"><a href="teacher_message.php"><b>新信息</b></a></li>
+			<p class="STYLE1">&nbsp;</p>
+			<p class="STYLE1">修改功能</p>
+			<li class="STYLE2"><a href="teacher_teach_table_change.php"><b>修改授课课表</b></a></li>
+			<p class="STYLE1">&nbsp;</p>
+			<p class="STYLE1">反馈功能</p>
+			<li class="STYLE2"><a href="teacher_apply_classroom.php"><b>申请自修室</b></a></li>
+			<li class="STYLE2"><a href="teacher_repair_info.php"><b>损坏物品维修</b></a></li>
+			<li class="STYLE2"><a href="teacher_send_administrator.php"><b>给管理员信息</b></a></li>
+			<li></li>
+		</ul>
+	</td>
+    <td width="778">软件介绍</td>
+  </tr>
+  <tr>
+		<td colspan="2"><p>&nbsp;</p>
+	    <p><a href="about_us.php"><img src="../images/logoo.jpg" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </p></td>
+  </tr>
+</table>
+</body>
+</html>

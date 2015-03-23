@@ -1,0 +1,5 @@
+<form id="form1" name="form1" method="post" action="">
+  <label>你的意见或建议
+  <input type="textarea" name="textfield" />
+  </label>
+</form>

@@ -1,0 +1,29 @@
+#ifndef _MY_TEMP_H_
+#define _MY_TEMP_H_
+
+#include "systemInit.h"
+
+#define TEMP_PERIPH         SYSCTL_PERIPH_GPIOF
+#define TEMP_PORT           GPIO_PORTF_BASE
+#define TEMP_PIN            GPIO_PIN_0
+#define TEMP_PINI           GPIO_PIN_1
+
+extern unsigned char integer,decimal;   //分别表示整数和小数
+extern char tempBuffer[6];
+extern float inte,deci;
+extern float t;
+//temp初始化
+extern void tempEnable(void);
+//初始化
+extern unsigned char tempInit(void);
+//读一个字节
+extern unsigned char readOneByte(void);
+//写一个字节
+extern void writeOneByte(unsigned char dat);
+//读温度
+extern float readTemp(void);
+//将温度转化成字符串，方便LCD显示
+extern void tempToStr(void);
+//直接在main函数调用该函数就行了，返回的就是存放温度的数组地址
+extern char * readStr(void);
+#endif

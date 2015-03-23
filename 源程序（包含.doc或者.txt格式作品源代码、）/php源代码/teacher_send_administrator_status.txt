@@ -1,0 +1,29 @@
+<?php
+session_start();
+?>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+		<meta http-equiv="refresh" content="3;url=teacher_send_administrator.php">
+		<title>消息发送跳转中...</title>
+	</head>
+	<body>
+<?php
+$con = mysql_connect("localhost", "root", "123456");
+mysql_query("set names 'gb2312'");
+mysql_select_db("classroom");
+$sqlstr = 'insert into administrator_message values ("' .
+		$_SESSION['username'] . '", ' .
+		(time() + 8 * 60 * 60) . ',
+		"' . $_POST['head'] . '",
+		"' . $_POST['content'] . '",
+		0)';
+// $sqlstr = 'apple<br />';
+ echo $sqlstr . '<br />';
+mysql_query($sqlstr, $con);
+
+mysql_close($con);
+echo '<b>发送消息成功，跳转中...</b>';
+?>
+	</body>
+</html>

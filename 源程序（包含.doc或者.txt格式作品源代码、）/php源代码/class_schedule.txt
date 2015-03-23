@@ -1,0 +1,62 @@
+<?php
+session_start();
+echo '<table>';
+$con = mysql_connect('localhost', 'root', '123456');
+mysql_select_db('classroom', $con);
+?>
+
+<html>
+	<head>
+		<title>×ÔÐÞÊÒÅÅ¿Î²é</title>
+	</head>
+	<body>
+<?php
+/********************************** Comment ******************************
+
+class schedule table
+
+*************************************************************************/
+if (isset($_POST['classroom_number'])) {
+	$classroom_number = $_POST['classroom_number'];
+} else {
+	$classroom_number = 101;
+}
+echo '<table>';
+echo '<tr><th width="160">week</th><th width="160">class</th><th width="160">subject</th><tr>';
+$aquery = mysql_query('select * from class_schedule_' . $classroom_number);
+while ($adata = mysql_fetch_array($aquery)){
+	echo sprintf('<tr><td>%s</td><td>%d</td><td>%s</td></tr>', $adata['week'], $adata['class'], $adata['subject']);
+}
+echo '</table>';
+
+/********************************** Comment ******************************
+
+hyperlink table
+
+*************************************************************************/
+echo '<table>';
+
+echo '<tr>';
+foreach (range(101, 105, 1) as $classroom_number) {
+	echo '<td width="80"><a href="php/class_schedule.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+echo '<tr>';
+foreach (range(201, 205, 1) as $classroom_number) {
+	echo '<td><a href="php/class_schedule.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+echo '<tr>';
+foreach (range(301, 305, 1) as $classroom_number) {
+	echo '<td><a href="php/class_schedule.php?classroom_number=' . $classroom_number . '">' . $classroom_number . '</a></td>';
+}
+echo '</tr>';
+
+echo '</table>';
+
+mysql_close($con);
+?>
+	</body>
+</html>

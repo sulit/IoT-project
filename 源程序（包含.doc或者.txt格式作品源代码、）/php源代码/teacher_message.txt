@@ -1,0 +1,115 @@
+<?php
+session_start();
+?>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理系统教师端</title>
+<style type="text/css">
+<!--
+.STYLE1 {font-size: 26px}
+.STYLE2 {font-size: 20px}
+body {
+	background-image: url(../images/084.jpg);
+}
+.STYLE3 {font-size: 23px}
+-->
+</style>
+</head>
+<body>
+<table width="960" border="0" align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="2"><img src="../images/801.jpg" width="987" height="180" /></td>
+  </tr>
+  <tr>
+    <td height="35" colspan="2"><div align="right"><a href="user_logout.php" class="STYLE3">退出</a></div></td>
+  </tr>
+  <tr>
+    <td width="216" height="385">
+      <ul>
+        <p class="STYLE1">&nbsp;</p>
+        <h3 class="STYLE1">查询功能</h3>
+        <li class="STYLE2"><a href="teacher_class_schedule.php"><b>自修室排课查询</b></a></li>
+		  <li class="STYLE2"><a href="teacher_teach_table.php"><b>授课课表查询</b></a></li>
+		  <li class="STYLE2"><a href="teacher_message.php"><b>新信息</b></a></li>
+		  <h3 class="STYLE1">修改功能</h3>
+		  <li class="STYLE2"><a href="teacher_teach_table_change.php"><b>修改授课课表</b></a></li>
+		  <h3 class="STYLE2">反馈功能</h3>
+		  <li class="STYLE2"><a href="teacher_apply_classroom.php"><b>申请自修室</b></a></li>
+		  <li class="STYLE2"><a href="teacher_repair_info.php"><b>损坏物品维修</b></a></li>
+		  <li class="STYLE2"><a href="teacher_send_administrator.php"><b>给管理员信息</b></a></li>
+		</ul>
+	</td>
+    <td width="771">
+	<div><table border="3">
+<?php
+$con = mysql_connect('localhost', 'root', '123456');
+mysql_query("set names 'gb2312'");
+mysql_select_db('classroom', $con);
+
+/*************************************************************************
+
+function: state2string
+
+*************************************************************************/
+
+function state2string($state) {
+	switch ($state) {
+	case 0:
+		return '未读';
+		break;
+	case 1:
+		return '已读';
+		break;
+	}
+}
+
+/********************************** Comment ******************************
+
+received message table
+
+*************************************************************************/
+echo '<caption>个人信息</caption>';
+echo '<tr bgcolor="gray"><th width="200">时间</th><th width="200">来自</th><th width="200">标题</th><th width="200">内容</th><th width="200">状态</th><th width="200">操作</th></tr>';
+$sqlstr = 'select * from ' . $_SESSION['username'] . '_message order by time';
+// echo $sqlstr;
+$aquery = mysql_query($sqlstr, $con);
+$times = 0;
+while ($adata = mysql_fetch_array($aquery)) {
+	echo sprintf('<tr %s>
+		<td> %s </td>
+		<td> %s </td>
+		<td> %s </td>
+		<td> %s </td>
+		<td> %s </td>
+		<td> <a href="teacher_read_message.php?time=%s"> 标读 </a><a href="teacher_delete_message.php?time=%s"> 删除 </a> </td>
+				</tr>',
+		($times++ % 2? 'bgcolor="silver"': ''),
+		date('Y年m月d日H时m分s秒', $adata['time']),
+		$adata['_from'],
+		$adata['head'],
+		$adata['content'],
+		state2string($adata['state']),
+		$adata['time'],
+		$adata['time'],
+		$adata['username'],
+		$adata['head']);
+}
+echo '</table>';
+
+mysql_close($con);
+?>
+	</table></div>
+	</td>
+  </tr>
+  <tr>
+    <td colspan="2">&nbsp;</td>
+  </tr>
+</table>
+<table width="994" height="44" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="994"><a href="about_us.php"><img src="../images/logoo.jpg" width="48" height="26" />关于我们</a> | <a href="contact_us.php">联系我们</a> | JSJ3 &copy; 2011 </td>
+    </tr>
+</table>
+</body>
+</html>

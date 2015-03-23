@@ -1,0 +1,161 @@
+#include "Temp.h"
+
+unsigned char integer,decimal;   //分别表示整数和小数
+float inte,deci;
+float t;
+char tempBuffer[6];
+
+//使能温度传感器所在的管脚
+void tempEnable(void)
+{
+  SysCtlPeriEnable(TEMP_PERIPH);
+  GPIOPinTypeOut(TEMP_PORT,TEMP_PIN);  //必须要让PA0作为输出端口，方便往里面写值
+  GPIOPinTypeIn(TEMP_PORT,TEMP_PINI); //PA1作为输入管脚，在main函数中判断
+  //有无温度传感器:高电平时要看是否与0X02相等，若用0XFF则会出现if判断错误
+}
+
+unsigned char tempInit(void)
+{
+  unsigned char flag;
+    
+  GPIOPinWrite(TEMP_PORT,TEMP_PIN,0XFF);
+  SysCtlDelay(6 * (TheSysClock / 3000000));
+  
+  GPIOPinWrite(TEMP_PORT,TEMP_PIN,0X00);
+  SysCtlDelay(600 * (TheSysClock / 3000000));
+  
+  GPIOPinWrite(TEMP_PORT,TEMP_PIN,0XFF);
+  SysCtlDelay(30 * (TheSysClock / 3000000));
+  
+  flag = GPIOPinRead(TEMP_PORT,TEMP_PINI);     
+  SysCtlDelay(200 * (TheSysClock / 3000000));
+  
+  return flag;
+}
+
+unsigned char readOneByte(void)
+{
+  unsigned char i = 0;
+  unsigned char dat = 0X00;       //存放最终的结果
+  unsigned char sdat = 0X00;      //用来存储温度传感器中的值
+  
+  for(i = 0;i < 8;i++ )
+  {    
+    GPIOPinWrite(TEMP_PORT,TEMP_PIN,0XFF);
+    SysCtlDelay(1 * (TheSysClock / 3000000));
+    
+    GPIOPinWrite(TEMP_PORT,TEMP_PIN,0X00);
+    SysCtlDelay(1 * (TheSysClock / 3000000));
+    
+    GPIOPinWrite(TEMP_PORT,TEMP_PIN,0XFF);
+    SysCtlDelay(6 * (TheSysClock / 3000000));
+    
+    dat >>= 1;    //由于在温度传感器中都是低位在前，所以读出来的也是高位
+                  //又由于将读出来的一位放在了dat的高位上，故要右移到低位
+    sdat = GPIOPinRead(TEMP_PORT,TEMP_PINI);//读取温度传感器中的值（只有一位）
+                                   //是高就给dat写高，是低就写低
+    if(sdat == 0X02)  //这里最好是0X02，是0XFF也行，0X02表示只是关注温度所在的管脚
+      dat |= 0X80;
+    else
+      dat |= 0X00;
+    
+    SysCtlDelay(3 * (TheSysClock / 3000000));   //读两位之间要有一定的延时
+   }
+  return dat;             //这个就是读出的温度中的一个字节
+}
+
+void writeOneByte(unsigned char dat)
+{
+  unsigned char i = 0;
+  unsigned char sdat;      //要写给温度传感器的数据（中间变量sensor data）
+  
+  for(i = 0;i < 8; i++)
+  {    
+    GPIOPinWrite(TEMP_PORT,TEMP_PIN,0XFF);
+    SysCtlDelay(1 * (TheSysClock / 3000000));
+    
+    GPIOPinWrite(TEMP_PORT,TEMP_PIN,0X00);
+    SysCtlDelay(1 * (TheSysClock / 3000000));
+    
+    sdat = dat & 0X01;    //取dat中的最低位,注意这里必须是0X01且写管脚必须是PA0    
+    GPIOPinWrite(TEMP_PORT,TEMP_PIN,sdat);
+    SysCtlDelay(30 * (TheSysClock / 3000000));  //让传感器在总线上采样
+    
+    GPIOPinWrite(TEMP_PORT,TEMP_PIN,0XFF);   //释放数据线
+    SysCtlDelay(3 * (TheSysClock / 3000000));
+    
+    dat >>= 1;
+  }
+}
+
+float readTemp(void)
+{
+  unsigned char low = 0; //存放温度低8位
+  unsigned char high = 0; //存放温度高8位
+  unsigned char sign;     //高8位中的5位符号位
+  
+  tempInit();
+  writeOneByte(0XCC);
+  writeOneByte(0X44);
+  SysCtlDelay(200 * (TheSysClock / 3000000));
+  
+  tempInit();
+  writeOneByte(0XCC);
+  writeOneByte(0XBE);
+  SysCtlDelay(200 * (TheSysClock / 3000000));
+  
+  low = readOneByte();   //低8位
+  high = readOneByte();   //高8位
+  sign = high & 0XF8;   //符号位
+ 
+  if(sign == 0X00)
+  {
+    integer = high << 4;
+    integer += (low & 0XF0) >> 4;
+    decimal = low & 0X0F;
+    
+    tempBuffer[0] = integer / 100 + '0';    //默认温度不会超过199度
+    if(tempBuffer[0] == '1') 
+    {
+      tempBuffer[0] = '1';
+    }
+    else
+    {
+      tempBuffer[0] = ' ';
+    }    
+  }
+  else
+  {
+    tempBuffer[0] = '-';      //默认温度不会超过零下100度
+    integer = high << 4;
+    integer += (low & 0XF0) >> 4;
+    integer = ~integer + 1;  //只是对整数位进行取反加1
+    decimal = ~low & 0X0F;   //小数位只需取反不需加1
+  }
+  
+  inte=integer;
+  deci=decimal;
+  
+  t=inte+deci/10.0;
+  return t;
+  
+}
+
+void tempToStr(void)
+{
+//  float deci;
+  tempBuffer[0] = integer % 100 / 10 + '0';  //温度十位
+  tempBuffer[1] = integer % 10 + '0';        //温度个位
+  tempBuffer[2] = '.';
+  tempBuffer[3] = decimal * 625 / 1000 % 10 + '0';
+  //tempBuffer[4] = '\0';
+}
+
+char * readStr(void)
+{
+  readTemp();
+  
+  tempToStr();
+  
+  return tempBuffer;
+}

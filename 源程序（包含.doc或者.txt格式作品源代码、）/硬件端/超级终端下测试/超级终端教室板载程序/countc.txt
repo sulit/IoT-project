@@ -1,0 +1,118 @@
+#include "count.h"
+#include "uartGetPut.h"
+#include <stdio.h>
+#include "lcdDisplay.h"
+
+
+
+int flagPerson;   //1--in 0--out 
+int count=0;
+int count1=0;
+int precount = 0;
+int flag1 = 0;
+int flag2 = 0;
+char str[10];
+char str5[10];//剩余人数数组
+void BZ_Init(void)
+{
+
+    SysCtlPeriEnable(BZ);                           
+    GPIOPinTypeIn(BZ_PORT,BZ_PIN_1);
+    GPIOPinTypeIn(BZ_PORT,BZ_PIN_2);
+    GPIOIntTypeSet(BZ_PORT, BZ_PIN_1,GPIO_FALLING_EDGE );     
+    GPIOIntTypeSet(BZ_PORT, BZ_PIN_2,GPIO_FALLING_EDGE ); 
+    GPIOPinIntEnable(BZ_PORT, BZ_PIN_1);    
+    GPIOPinIntEnable(BZ_PORT, BZ_PIN_2);                   
+    IntEnable(INT_GPIOF);                                   
+    IntMasterEnable();  
+  }
+//  GPIOF的中断服务函数
+void GPIO_Port_F_ISR(void)
+{
+    unsigned long ulStatus;
+    ulStatus = GPIOPinIntStatus(BZ_PORT, true);            //  读取中断状态
+    GPIOPinIntClear(BZ_PORT, ulStatus);                    //  清除中断状态，重要
+    //使能液晶
+  LCD_Init();      //LCD初始化  
+  clear_All();     //清屏
+
+    if (ulStatus & BZ_PIN_1)                          //  如果BZ1的中断状态有效
+    {
+          if(flag2 == 1)
+          {
+            count--;
+            if(count <0)
+              count = 0;
+              // uartPuts("\r\n");
+            //uartPuts("1人离开");
+             //LCD_WriteStr(1,2,"1人离开");
+                //  SysCtlDelay(100*(TheSysClock/3000));
+            
+            flag2 = 0;
+           if(count==0)
+           {
+             
+             //uartPuts("你好，请锁门！");
+             //SysCtlDelay(100*(TheSysClock/3000));
+             // LCD_WriteStr(2,2,"你好，请锁门");
+                  //SysCtlDelay(100*(TheSysClock/3000));
+            
+           }
+           else
+           {
+            count1=200-count;
+            sprintf(str,"现在人数:%2d",count);
+            sprintf(str5,"剩余座位:%2d",count1);
+            
+            uartPuts(str);
+            uartPuts("\r\n");
+            uartPuts(str5);
+            
+            SysCtlDelay(100*(TheSysClock/3000));
+           // SysCtlDelay(100*(TheSysClock/3000));
+            //LCD_WriteStr(1,1,str);
+            //LCD_WriteStr(3,1,str1);
+            //LCD_WriteStr(3,6,str);
+            SysCtlDelay(100*(TheSysClock/3000));
+           }
+
+          }
+          else
+          {
+            flag1 = 1;
+          }
+    }
+    if(ulStatus&BZ_PIN_2)
+    {
+          if(flag1 == 1)
+          {
+            count++;
+            flag1 = 0; 
+            flagPerson=1;
+           // uartPuts("\r\n");
+           // uartPuts("1人进入");
+            //SysCtlDelay(100*(TheSysClock/3000));
+            //LCD_WriteStr(1,2,"1人进入");
+           // SysCtlDelay(100*(TheSysClock/3000));
+            count1=200-count;
+           sprintf(str,"现在人数:%2d",count);
+           sprintf(str5,"剩余座位:%2d",count1);
+           uartPuts(str);
+           uartPuts("\r\n");
+           uartPuts(str5);
+           SysCtlDelay(100*(TheSysClock/3000));
+           
+           //LCD_WriteStr(1,1,str);
+           //LCD_WriteStr(3,1,str1);
+           //LCD_WriteStr(1,6,str);
+           SysCtlDelay(100*(TheSysClock/3000));
+            //SysCtlDelay(100*(TheSysClock/3000));
+
+          }
+          else
+          {
+            flag2 = 1;
+          } 
+   } 
+
+}

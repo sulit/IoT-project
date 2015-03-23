@@ -1,0 +1,129 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>智慧校园管理员页面</title>
+<link rel="stylesheet" href="../css/administrator.css" type="text/css" />
+<style type="text/css">
+<!--
+.STYLE3 {font-size: 24%}
+.STYLE4 {
+	font-family: "楷体_GB2312";
+	font-size: xx-large;
+	color: #0033CC;
+	font-weight: bold;
+}
+body {
+	background-image: url("../images/overlook.jpg");
+}
+div#wrapper {
+	margin: 0 auto;
+	padding: 0;
+	border: 0;
+	width: 966px;
+	text-align: left;
+	background: transparent url(/i/site_wrapper.gif) top left repeat-y;
+}
+#Layer1 {
+	position:absolute;
+	width:200px;
+	height:115px;
+	z-index:1;
+	left: 453px;
+	top: 328px;
+}
+.STYLE5 {color: #006699}
+.STYLE6 {font-size: large}
+.STYLE8 {font-size: medium}
+-->
+</style></head>
+<body>
+<?php
+// echo $_SESSION['administrator'];
+if (!isset($_SESSION['administrator'])) {
+?>
+<form name="form" id="form" action="administrator_login_status.php" method="POST">
+	<div id="Layer1">
+		<fieldset>
+			<h3>管理员登陆</h3>
+			<br /><br />
+			<label for="name">用户名</label><br />
+			<input type="text" name="name" id="name" /><br />
+			<label for="password">密码</label><br />
+			<input type="password" name="password" id="password" /><br /><br />
+			<input type="submit" value="登陆" />
+		</fieldset>
+	</div>
+</form>
+<?php
+} else {
+?>
+  <div id="wrapper"><img src="../t/801.jpg" width="944" height="180" />
+    <div id="globalNav"> 
+      <p>&nbsp;</p>
+      <p><img src="../images/site.jpg" /><font color="blue"><b>位置: </b></font><a href="administrator_login.php" class="STYLE3">主 页</a></p>
+    </div>
+  <h2 id="pageName">欢迎使用智慧校园管理员界面</h2>
+   <a> | </a> <span class="STYLE5"><a href="administrator_logout_status.php"> 退出 </a></span> <a> | </a>
+  <div id="breadCrumb"> 
+    <p>
+	</p>
+    <p>&nbsp;</p>
+  </div>
+<div id="navBar">
+  <div id="search">
+    <form action="#">
+      <label>search</label>
+      <input name="searchFor" type="text" size="10" />
+      <input name="goButton" type="submit" value="go" />
+    </form>
+  </div>
+  <div id="sectionLinks">
+    <h3>查询功能</h3>
+    <ul>
+      <li><a href="administrator_classroom_status.php">自修室状态</a></li>
+      <li><a href="administrator_class_table.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule.php">自修室课表</a></li>
+      <li><a href="administrator_room_safe.php">宿舍安全</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>修改功能</h3>
+    <ul>
+      <li><a href="administrator_class_table_change.php">教室课表</a></li>
+      <li><a href="administrator_class_schedule_change.php">自修室课表</a></li>
+      <li><a href="administrator_user_control.php">用户管理</a></li>
+    </ul>
+  </div>
+  <div id="sectionLinks">
+    <h3>流动信息</h3>
+    <ul>
+      <li><a href="administrator_order_classroom_info.php">自修室预定</a></li>
+      <li><a href="administrator_repair_table_info.php">设备维护</a></li>
+      <li><a href="administrator_message.php">问题反馈</a></li>
+    </ul>
+  </div>
+</div>
+<!--end navBar div -->
+<!--end headlines -->
+<div id="content">
+  <div class="feature"> <img src="../images/pic1.jpg" width="400" height="230" />
+
+    <h3 class="STYLE6">智慧校园管理员界面</h3>
+    <p class="STYLE8"> 智慧校园管理员界面是学校管理员专用入口，拥有对智慧校园系统管理的最高权限，该界面包含了对课表的查询和修改，宿舍安全的监控，对学生用户管理，教室预定以及设备运行状况监控等功能，使管理员真正实现了“运筹帷幄之中，决胜千里之外”。</p>
+    <p class="STYLE8">我们团队设计的智慧校园管理员界面的创新之处在于该界面独立于主页之外，在主页没有链接，只有特定的主机才拥有访问权限，凭密管理，大大增加了系统的安全性和可靠性。</p>
+    <h3><!--end content -->
+</h3>
+  </div>
+</div>
+<div id="siteInfo"> <img src="../images/logo.jpg" width="44" height="22" /> <a href="about_us.php">关于我们</a> | <a href="contact_us.php">联系我们</a> | &copy;2003 Company Name </div>
+<br />
+</div>
+<?php
+}
+?>
+</body>
+</html>

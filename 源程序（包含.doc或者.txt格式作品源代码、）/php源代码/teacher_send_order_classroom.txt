@@ -1,0 +1,22 @@
+<?php
+session_start();
+?>
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<meta http-equiv="refresh" content="3; url=teacher_apply_classroom.php" />
+	<head>
+		<title>申请教室跳转中...</title>
+	</head>
+	<body>
+<?php
+echo '信息发送成功，跳转中...';
+$con = mysql_connect("localhost", "root", "123456");
+mysql_select_db("classroom", $con);
+mysql_query("set names 'gb2312'");
+$sqlstr = 'insert into order_classroom values ("' . $_SESSION['username'] . '", ' . (time() + 8 * 60 * 60) . ', ' . $_POST['week'] . ', ' . $_POST['classroom_number'] . ', ' . $_POST['class'] . ', "' . $_POST['subject'] . '", "' . $_POST['content'] . '")';
+// echo $sqlstr;
+$aquery = mysql_query($sqlstr);
+mysql_close();
+?>
+	</body>
+</html>

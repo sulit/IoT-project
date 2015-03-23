@@ -1,0 +1,268 @@
+#include "NRF24L01.h"
+#include "ssi.h"
+
+#define PART_LM3S1138
+#include <pin_map.h>
+
+uchar TX_ADDRESS[TX_ADR_WIDTH] = {0x34,0x43,0x10,0x10,0x01};
+
+uchar rx_buf[TX_PLOAD_WIDTH];
+uchar tx_buf[TX_PLOAD_WIDTH];
+//uchar flag;
+uchar sta;
+
+tBoolean f = false;
+
+NRF_IO CE,CSN,IRQ;
+
+
+//LED的初始化
+void LedInit(void)
+{
+  SysCtlPeriEnable(SYSCTL_PERIPH_GPIOG);
+  GPIOPinTypeOut(GPIO_PORTG_BASE,GPIO_PIN_2);
+  GPIOPinWrite(GPIO_PORTG_BASE,GPIO_PIN_2,0xff);
+}
+//点亮
+void LedOn(void)
+{
+  GPIOPinWrite(GPIO_PORTG_BASE,GPIO_PIN_2,0x00);
+}
+//熄灭
+void LedOff(void)
+{
+  GPIOPinWrite(GPIO_PORTG_BASE,GPIO_PIN_2,0xff);
+}  
+
+
+//成员变量
+void NRF_IO_MemberSet(NRF_IO *pThis,
+                      unsigned long ulPeriph,
+                      unsigned long ulPort,
+                      unsigned char ucPin)
+{
+  pThis->ulPeriph = ulPeriph;
+  pThis->ulPort   = ulPort;
+  pThis->ucPin    = ucPin;
+}
+//使能
+void NRF_IO_Enable(NRF_IO *pThis)
+{
+  SysCtlPeriEnable(pThis->ulPeriph);
+}
+//输入
+void NRF_IO_In(NRF_IO *pThis)
+{
+  GPIOPinTypeIn(pThis->ulPort,pThis->ucPin);
+}
+//输出
+void NRF_IO_Out(NRF_IO *pThis)
+{
+  GPIOPinTypeOut(pThis->ulPort,pThis->ucPin);
+}
+//置高
+void NRF_IO_Set(NRF_IO *pThis)
+{
+  GPIOPinWrite(pThis->ulPort,pThis->ucPin,0xff);
+}
+//置低
+void NRF_IO_Clr(NRF_IO *pThis)
+{
+  GPIOPinWrite(pThis->ulPort,pThis->ucPin,0x00);
+}
+//NRF相关端口的使能、引脚的设置、中断的设置
+void NRF_IO_Init(void)
+{
+  //管脚映射
+  NRF_IO_MemberSet(&CE,
+                   SYSCTL_PERIPH_GPIOF,
+                   GPIO_PORTF_BASE,
+                   GPIO_PIN_0);
+  NRF_IO_MemberSet(&CSN,
+                   SYSCTL_PERIPH_GPIOF,
+                   GPIO_PORTF_BASE,
+                   GPIO_PIN_6);
+  NRF_IO_MemberSet(&IRQ,
+                   SYSCTL_PERIPH_GPIOF,
+                   GPIO_PORTF_BASE,
+                   GPIO_PIN_5);     //原来是PF1（小车占用），改成PF5
+  //使能
+  NRF_IO_Enable(&CE);
+  NRF_IO_Enable(&CSN);
+  NRF_IO_Enable(&IRQ);
+  //引脚设置
+  NRF_IO_Out(&CE);
+  NRF_IO_Out(&CSN);
+  NRF_IO_In(&IRQ);
+  //中断类型
+  GPIOIntTypeSet(IRQ.ulPort,
+                 IRQ.ucPin,
+                 GPIO_LOW_LEVEL);
+  IntPrioritySet(INT_GPIOF,1 << 5);
+  GPIOPinIntEnable(IRQ.ulPort,
+                   IRQ.ucPin);
+  IntEnable(INT_GPIOF);
+  IntMasterEnable();
+}
+//SSI相关端口的使能、引脚的设置及相关配置
+void ssiInit(void)
+{
+  unsigned long ulBitRate = TheSysClock / 8;
+  //使能外设
+  SysCtlPeriEnable(SYSCTL_PERIPH_SSI0);
+  SysCtlPeriEnable(SSI0CLK_PERIPH);
+  SysCtlPeriEnable(SSI0RX_PERIPH);
+  SysCtlPeriEnable(SSI0TX_PERIPH);
+  //引脚设置
+  GPIOPinTypeSSI(SSI0CLK_PORT,SSI0CLK_PIN);
+  GPIOPinTypeSSI( SSI0RX_PORT, SSI0RX_PIN);
+  GPIOPinTypeSSI( SSI0TX_PORT, SSI0TX_PIN);
+  //相关配置
+  SSIConfig(SSI0_BASE,
+            SSI_FRF_MOTO_MODE_0,
+            SSI_MODE_MASTER,
+            ulBitRate,
+            8);
+  //使能SSI的发送接收功能
+  SSIEnable(SSI0_BASE);
+}
+//总初始化：SSI、LED、NRF24L01的初始化
+void init_io(void)
+{
+  ssiInit();
+  LedInit();
+  NRF_IO_Init();
+  NRF_IO_Clr(&CE);
+  NRF_IO_Set(&CSN);
+}
+
+//SPI写读：本开发板与该板上的无线的联系
+uchar SPI_RW(uchar byte)
+{
+  uchar bit_ctr;
+  unsigned long temp;
+  SSIDataPut(SSI0_BASE,byte);//将byte放入发送FIFO中，传给nRF24L01
+  SSIDataGet(SSI0_BASE,&temp);//从（nRF24L01）接收FIFO中读取数据放入temp指向的地址中,并将该地址中的值送给开发板
+  bit_ctr = (unsigned char)temp;
+  return (bit_ctr);
+}
+//读写寄存器
+void SPI_RW_Reg(BYTE reg,BYTE value)
+{
+  NRF_IO_Clr(&CSN);   //无线开始工作
+  
+  SPI_RW(reg);  //要写这个寄存器，并把这个寄存器中的值读回
+  SPI_RW(value);//写这个值
+  
+  NRF_IO_Set(&CSN);
+}
+//读寄存器的值
+BYTE SPI_Read(BYTE reg)
+{
+  BYTE reg_val;
+  NRF_IO_Clr(&CSN);
+  reg_val = SPI_RW(reg);       
+  NRF_IO_Set(&CSN);
+  
+  return reg_val;
+}
+uchar SPI_Read_Buf(BYTE reg,BYTE *pBuf, BYTE bytes)
+{
+  uchar status,byte_ctr;
+  NRF_IO_Clr(&CSN);
+  status = SPI_RW(reg);
+  
+  for(byte_ctr = 0;byte_ctr<bytes;byte_ctr++)
+  {
+    pBuf[byte_ctr]=SPI_RW(0);
+  }
+  
+  NRF_IO_Set(&CSN);
+  return status;
+}
+//往缓冲区中写数据，写的数据是pBuf中的值
+void SPI_Write_Buf(BYTE reg,BYTE *pBuf,BYTE bytes)
+{
+  uchar byte_ctr;
+  NRF_IO_Clr(&CSN);
+  SPI_RW(reg);
+  
+  for(byte_ctr=0;byte_ctr<bytes;byte_ctr++)
+  {
+    SPI_RW(*pBuf++);   //写
+  }
+  NRF_IO_Set(&CSN);
+}
+
+void RX_Mode(void)
+{
+  NRF_IO_Clr(&CE);
+  //设置数据通道0接收地址
+  SPI_Write_Buf(WRITE_REG + RX_ADDR_P0, TX_ADDRESS, TX_ADR_WIDTH);
+  SPI_RW_Reg(WRITE_REG + EN_AA    ,0x01);//数据通道0自动应答
+  SPI_RW_Reg(WRITE_REG + EN_RXADDR,0x01);//接收数据通道0允许
+  SPI_RW_Reg(WRITE_REG + RF_CH    ,40);//设置工作频率，应该是0X40吧？？
+  SPI_RW_Reg(WRITE_REG + RX_PW_P0 ,TX_PLOAD_WIDTH);//接收数据通0有效数据宽度
+  SPI_RW_Reg(WRITE_REG + RF_SETUP ,0x07);//射频寄存器，数据传输率是1Mbps
+  SPI_RW_Reg(WRITE_REG + CONFIG   ,0x0f);//配置为接收模式
+  NRF_IO_Set(&CE);//启动接收
+  
+}
+
+void TX_Mode(void)
+{
+  //int i;
+  //for(i = 0;i< 10 ;i++)
+  //{
+  //  tx_buf[i] = 'a';
+ // }
+  //tx_buf[i] = '\0';
+  NRF_IO_Clr(&CE);
+  //设置发送地址
+  SPI_Write_Buf(WRITE_REG + TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);
+  //设置数据通道0接收地址
+  SPI_Write_Buf(WRITE_REG + RX_ADDR_P0,TX_ADDRESS, TX_ADR_WIDTH);
+  SPI_Write_Buf(WR_TX_PLOAD, tx_buf,TX_PLOAD_WIDTH);
+  
+  SPI_RW_Reg(WRITE_REG + EN_AA      , 0x01);
+  SPI_RW_Reg(WRITE_REG + EN_RXADDR  , 0x01);
+  SPI_RW_Reg(WRITE_REG + SETUP_RETR , 0x1a);
+  SPI_RW_Reg(WRITE_REG + RF_CH      , 40  );
+  SPI_RW_Reg(WRITE_REG + RF_SETUP   , 0x07);
+  SPI_RW_Reg(WRITE_REG + CONFIG     , 0x0e);
+  NRF_IO_Set(&CE);
+}
+
+void GPIO_Port_F_ISR(void)
+{
+  unsigned long ulStatus;
+  ulStatus = GPIOPinIntStatus(IRQ.ulPort,true);
+  GPIOPinIntClear(IRQ.ulPort,ulStatus);
+  
+  if(ulStatus & IRQ.ucPin)
+  {
+    sta = SPI_Read(STATUS);
+    if(TX_DR)
+    {
+      LedOn();
+      SysCtlDelay(50 * (TheSysClock / 3000));
+      LedOff();
+      SysCtlDelay(50 * (TheSysClock / 3000));  
+      //RX_Mode();
+    }
+    if(RX_DR)
+    {
+      LedOn();    //接收成功“走”“停”后点亮LED2
+      SPI_Read_Buf(RD_RX_PLOAD,rx_buf,TX_PLOAD_WIDTH);
+      //SysCtlDelay(200 * (TheSysClock / 3000));
+      
+    }
+    if(MAX_RT)
+    {
+      SPI_RW_Reg(FLUSH_TX,0);
+    }
+    SPI_RW_Reg(WRITE_REG + STATUS, sta);
+  }
+}
+
+

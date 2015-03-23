@@ -1,0 +1,19 @@
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<meta http-equiv="refresh" content="3; url=administrator_status_control.php" />
+	<head>
+		<title>控制教室状态</title>
+	</head>
+	<body>
+		<b>改变控制状态成功，跳转中...</b>
+<?php
+$con = mysql_connect("localhost", "root", "123456");
+mysql_select_db("classroom");
+mysql_query("set names 'gb2312'");
+$sqlstr = 'update classroom_status set light_status = "' . $_POST['light_status'] . '", fan_status = "' . $_POST['fan_status'] . '", hot_status = "' . $_POST['hot_status'] . '", ctrl = "' . $_POST['ctrl'] . '" where classroom_number = "' . $_POST['classroom_number'] . '"';
+// echo $sqlstr . '<br />';
+mysql_query($sqlstr, $con);
+mysql_close($con);
+?>
+	</body>
+</html>
